@@ -1,6 +1,6 @@
 # Multicasa
 
-Proyecto Django para el sistema inmobiliario Multicasa, desarrollado siguiendo los requisitos de análisis, arquitectura y modelo físico de base de datos incluidos en la documentación del proyecto.
+Plataforma inmobiliaria desarrollada en Django y Python, diseñada a partir del modelado físico relacional y levantamiento de requerimientos del sistema Multicasa. Permite la gestión integral del catálogo de inmuebles, filtrado avanzado, control de estados (disponible, reservado, vendido/rentado) y administración de perfiles de usuario mediante Django ORM.
 
 ## Requisitos
 
@@ -79,3 +79,28 @@ DB_PORT=3306
 - Módulo público y módulo administrativo
 - Estructura de directorios proporcional a la arquitectura del proyecto
 - Soporte para formularios de contacto y reportes analíticos
+
+## Pruebas unitarias
+
+Las pruebas están organizadas en `tests/unit/` por módulo. Para ejecutarlas:
+
+```powershell
+python manage.py test tests
+```
+
+## Integración continua y protección de `main`
+
+El workflow `.github/workflows/ci.yml` ejecuta las comprobaciones de Django,
+verifica que no falten migraciones, aplica migraciones y corre las pruebas con
+MySQL 8.4 en cada pull request dirigido a `main`.
+
+Para impedir merges cuando el workflow falla, configura una regla en GitHub:
+
+1. Abre **Settings → Rules → Rulesets** (o **Settings → Branches**).
+2. Crea una regla para la rama `main`.
+3. Activa **Require a pull request before merging**.
+4. Activa **Require status checks to pass** y selecciona
+   **Django CI / django-tests**.
+5. Guarda la regla y asegúrate de que aplique a `main`.
+
+El workflow ejecuta las pruebas; la regla de rama es la que bloquea el merge.
