@@ -1,0 +1,23 @@
+* { box-sizing: border-box; }
+body { margin: 0; font-family: Arial, sans-serif; color: #1a1a1a; background: #f5f7fa; }
+.site-header { background: #0b263d; color: white; }
+.navbar { max-width: 1200px; margin: 0 auto; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; }
+.brand { font-weight: 700; font-size: 1.5rem; }
+.nav-links { display: flex; gap: 18px; }
+.nav-links a { color: white; text-decoration: none; }
+.hero { background: linear-gradient(135deg, #0d3b66, #5f8ea3); color: white; padding: 80px 24px; }
+.hero-content { max-width: 1200px; margin: 0 auto; }
+.eyebrow { text-transform: uppercase; letter-spacing: 0.08rem; font-size: 0.8rem; }
+.cards, .panel, .form-panel { max-width: 1200px; margin: 32px auto; padding: 0 24px; }
+.property-card { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 3px 12px rgba(0,0,0,0.08); margin-bottom: 20px; }
+.property-image { height: 180px; background: linear-gradient(135deg, #d9e7f4, #b3cde6); }
+.property-body { padding: 18px; }
+.price { font-weight: 700; color: #0f7d5d; }
+.stats-grid, .chart-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+.stat-card, .chart-card, .form-panel { background: white; border-radius: 10px; padding: 20px; box-shadow: 0 3px 12px rgba(0,0,0,0.06); }
+form label { display: block; margin-bottom: 8px; font-weight: 600; }
+form input, form textarea, form select { width: 100%; padding: 10px; margin-bottom: 16px; border: 1px solid #d4d9df; border-radius: 8px; }
+button { background: #0d3b66; color: white; border: none; border-radius: 8px; padding: 11px 20px; cursor: pointer; }
+.success-message { color: green; font-weight: 600; }
+.narrow { max-width: 520px; }
+@media (max-width: 768px) { .navbar { flex-direction: column; align-items: flex-start; gap: 10px; } .nav-links { flex-wrap: wrap; } }

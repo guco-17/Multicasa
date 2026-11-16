@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Multicasa | Inicio{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="hero-content">
+        <p class="eyebrow">Catálogo inmobiliario</p>
+        <h1>Encuentra la casa ideal en tu ciudad.</h1>
+        <p>Multicasa ofrece inmuebles en venta, filtros por ciudad, zona, precio y estatus, además de visualización geográfica y datos administrativos.</p>
+    </div>
+</section>
+
+<section class="cards">
+    {% for casa in casas %}
+        <article class="property-card">
+            <div class="property-image placeholder"></div>
+            <div class="property-body">
+                <h2>{{ casa.titulo }}</h2>
+                <p>{{ casa.ciudad }} · {{ casa.zona }}</p>
+                <p class="price">${{ casa.precio }}</p>
+                <ul>
+                    <li>{{ casa.recamaras }} recámaras</li>
+                    <li>{{ casa.banos }} baños</li>
+                    <li>{{ casa.metros_construccion }} m²</li>
+                </ul>
+            </div>
+        </article>
+    {% empty %}
+        <p>No hay propiedades registradas actualmente.</p>
+    {% endfor %}
+</section>
+{% endblock %}

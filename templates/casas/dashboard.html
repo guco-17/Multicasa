@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard | Multicasa{% endblock %}
+
+{% block content %}
+<section class="panel">
+    <h1>Dashboard administrativo</h1>
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h3>Total de casas</h3>
+            <p>{{ total_casas }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>En venta</h3>
+            <p>{{ casas_en_venta }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Vendidas</h3>
+            <p>{{ casas_vendidas }}</p>
+        </div>
+    </div>
+</section>
+{% endblock %}

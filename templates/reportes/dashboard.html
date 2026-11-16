@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}Reportes | Multicasa{% endblock %}
+
+{% block content %}
+<section class="panel">
+    <h1>Reportes y dashboard</h1>
+    <div class="chart-grid">
+        <div class="chart-card">
+            <h2>Casas por rango de costo</h2>
+            <ul>
+                {% for nombre, cantidad in rangos.items %}
+                    <li>{{ nombre }}: {{ cantidad }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="chart-card">
+            <h2>Estatus</h2>
+            <ul>
+                {% for nombre, cantidad in estatus.items %}
+                    <li>{{ nombre }}: {{ cantidad }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</section>
+{% endblock %}

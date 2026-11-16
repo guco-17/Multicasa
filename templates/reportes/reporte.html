@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}Reporte Multicasa{% endblock %}
+
+{% block content %}
+<section class="panel">
+    <h1>Reporte resumido del inventario</h1>
+    <h2>Rangos de costo</h2>
+    <ul>
+        {% for nombre, cantidad in rangos.items %}
+            <li>{{ nombre }}: {{ cantidad }}</li>
+        {% endfor %}
+    </ul>
+    <h2>Estatus</h2>
+    <ul>
+        {% for nombre, cantidad in estatus.items %}
+            <li>{{ nombre }}: {{ cantidad }}</li>
+        {% endfor %}
+    </ul>
+</section>
+{% endblock %}
