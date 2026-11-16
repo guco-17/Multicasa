@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Multicasa | Inicio{% endblock %}
 
@@ -9,6 +10,24 @@
         <h1>Encuentra la casa ideal en tu ciudad.</h1>
         <p>Multicasa ofrece inmuebles en venta, filtros por ciudad, zona, precio y estatus, además de visualización geográfica y datos administrativos.</p>
     </div>
+    <picture class="hero-picture">
+        <source
+            type="image/avif"
+            srcset="{% static 'assets/photos/hero-casa-exterior-480.avif' %} 480w, {% static 'assets/photos/hero-casa-exterior-771.avif' %} 771w"
+            sizes="(max-width: 800px) 100vw, 771px">
+        <source
+            type="image/webp"
+            srcset="{% static 'assets/photos/hero-casa-exterior-480.webp' %} 480w, {% static 'assets/photos/hero-casa-exterior-771.webp' %} 771w"
+            sizes="(max-width: 800px) 100vw, 771px">
+        <img
+            src="{% static 'assets/photos/hero-casa-exterior-771.jpg' %}"
+            srcset="{% static 'assets/photos/hero-casa-exterior-480.jpg' %} 480w, {% static 'assets/photos/hero-casa-exterior-771.jpg' %} 771w"
+            sizes="(max-width: 800px) 100vw, 771px"
+            width="771"
+            height="255"
+            alt="Casa con jardín y fachada de estilo mediterráneo"
+            fetchpriority="high">
+    </picture>
 </section>
 
 <section class="cards">
