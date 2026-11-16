@@ -1,52 +1,171 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Multicasa | Inicio{% endblock %}
+{% block title %}Bienes Raíces Multicasa | Inicio{% endblock %}
 
 {% block content %}
-<section class="hero">
-    <div class="hero-content">
-        <p class="eyebrow">Catálogo inmobiliario</p>
-        <h1>Encuentra la casa ideal en tu ciudad.</h1>
-        <p>Multicasa ofrece inmuebles en venta, filtros por ciudad, zona, precio y estatus, además de visualización geográfica y datos administrativos.</p>
+<div class="row g-0 hero-row">
+    <div class="col-lg-9">
+        <picture class="hero-picture">
+            <source
+                type="image/avif"
+                srcset="{% static 'assets/photos/hero-casa-exterior-480.avif' %} 480w, {% static 'assets/photos/hero-casa-exterior-771.avif' %} 771w"
+                sizes="(max-width: 800px) 100vw, 771px">
+            <source
+                type="image/webp"
+                srcset="{% static 'assets/photos/hero-casa-exterior-480.webp' %} 480w, {% static 'assets/photos/hero-casa-exterior-771.webp' %} 771w"
+                sizes="(max-width: 800px) 100vw, 771px">
+            <img
+                src="{% static 'assets/photos/hero-casa-exterior-771.jpg' %}"
+                srcset="{% static 'assets/photos/hero-casa-exterior-480.jpg' %} 480w, {% static 'assets/photos/hero-casa-exterior-771.jpg' %} 771w"
+                sizes="(max-width: 800px) 100vw, 771px"
+                width="771"
+                height="255"
+                alt="Casa con jardín y fachada de estilo mediterráneo"
+                fetchpriority="high">
+        </picture>
     </div>
-    <picture class="hero-picture">
-        <source
-            type="image/avif"
-            srcset="{% static 'assets/photos/hero-casa-exterior-480.avif' %} 480w, {% static 'assets/photos/hero-casa-exterior-771.avif' %} 771w"
-            sizes="(max-width: 800px) 100vw, 771px">
-        <source
-            type="image/webp"
-            srcset="{% static 'assets/photos/hero-casa-exterior-480.webp' %} 480w, {% static 'assets/photos/hero-casa-exterior-771.webp' %} 771w"
-            sizes="(max-width: 800px) 100vw, 771px">
-        <img
-            src="{% static 'assets/photos/hero-casa-exterior-771.jpg' %}"
-            srcset="{% static 'assets/photos/hero-casa-exterior-480.jpg' %} 480w, {% static 'assets/photos/hero-casa-exterior-771.jpg' %} 771w"
-            sizes="(max-width: 800px) 100vw, 771px"
-            width="771"
-            height="255"
-            alt="Casa con jardín y fachada de estilo mediterráneo"
-            fetchpriority="high">
-    </picture>
-</section>
+    <aside class="col-lg-3 quick-menu" aria-label="Servicios inmobiliarios">
+        <a href="#buscador">Compra</a>
+        <a href="#servicios">Construye</a>
+        <a href="#buscador">Venta</a>
+        <a href="#servicios">Mudanzas</a>
+        <a href="#servicios">Seguros</a>
+        <a href="{% url 'contacto' %}">Contactos</a>
+    </aside>
+</div>
 
-<section class="cards">
-    {% for casa in casas %}
-        <article class="property-card">
-            <div class="property-image placeholder"></div>
-            <div class="property-body">
-                <h2>{{ casa.titulo }}</h2>
-                <p>{{ casa.ciudad }} · {{ casa.zona }}</p>
-                <p class="price">${{ casa.precio }}</p>
-                <ul>
-                    <li>{{ casa.recamaras }} recámaras</li>
-                    <li>{{ casa.banos }} baños</li>
-                    <li>{{ casa.metros_construccion }} m²</li>
-                </ul>
-            </div>
-        </article>
-    {% empty %}
-        <p>No hay propiedades registradas actualmente.</p>
-    {% endfor %}
-</section>
+<div class="row g-0 content-row">
+    <section class="col-lg-9 welcome-content">
+        <div id="compania" class="welcome-section">
+            <h1 class="section-title">BIENVENIDO</h1>
+            <p class="section-subtitle">¡A nuestro sitio web de Bienes Raíces Multicasa!</p>
+            <p>
+                En Multicasa te conectamos con las mejores opciones de compra y renta.
+                Explora nuestro catálogo verificado y recibe asesoría transparente desde tu
+                primera visita hasta la firma.
+            </p>
+            <p>
+                Comprar, vender o rentar una propiedad no tiene por qué ser complicado.
+                Combinamos conocimiento del mercado local con atención personalizada para
+                garantizar operaciones seguras y sin contratiempos.
+            </p>
+        </div>
+
+        <section id="servicios" class="content-section">
+            <h2 class="section-heading">SERVICIOS DESTACADOS</h2>
+            <p>
+                Te acompañamos durante la búsqueda y te ayudamos a conocer los detalles
+                de cada propiedad. Usa el buscador para consultar opciones por ciudad,
+                precio, recámaras y estatus.
+            </p>
+            <ul class="service-list">
+                <li><a href="#buscador">Encuentra una propiedad</a></li>
+                <li><a href="{% url 'contacto' %}">Solicita información o una visita</a></li>
+                <li><a href="#requisitos">Conoce los detalles de compra</a></li>
+            </ul>
+        </section>
+
+        <section id="requisitos" class="content-section">
+            <h2 class="section-heading">INFORMACIÓN PARA COMPRADORES</h2>
+            <p>
+                Revisa la ubicación, precio y características de las viviendas disponibles.
+                Si una propiedad es de tu interés, envíanos un mensaje desde el formulario
+                de contacto.
+            </p>
+            <a class="more-link" href="{% url 'contacto' %}">Contáctanos para más información <span aria-hidden="true">»</span></a>
+        </section>
+
+        {% if search_performed %}
+            <section id="resultados" class="content-section search-results" aria-live="polite">
+                <h2 class="section-heading">RESULTADOS DE BÚSQUEDA</h2>
+                {% if search_form.errors %}
+                    <div class="alert alert-warning py-2" role="alert">
+                        Revisa los filtros ingresados.
+                        {{ search_form.non_field_errors }}
+                        {% for field in search_form %}
+                            {% for error in field.errors %}<div>{{ field.label }}: {{ error }}</div>{% endfor %}
+                        {% endfor %}
+                    </div>
+                {% elif casas %}
+                    <div class="list-group">
+                        {% for casa in casas %}
+                            <article class="list-group-item property-result">
+                                <div class="d-flex justify-content-between flex-wrap gap-2">
+                                    <h3>{{ casa.titulo }}</h3>
+                                    <strong class="property-price">${{ casa.precio }}</strong>
+                                </div>
+                                <p>{{ casa.ciudad }} · {{ casa.zona }} · {{ casa.estatus }}</p>
+                                <p class="mb-0">{{ casa.recamaras }} recámaras · {{ casa.banos }} baños · {{ casa.metros_construccion }} m² de construcción</p>
+                            </article>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="search-empty">No encontramos propiedades con esos filtros. Intenta ampliar tu búsqueda.</p>
+                {% endif %}
+            </section>
+        {% endif %}
+    </section>
+
+    <aside class="col-lg-3 sidebar">
+        <section id="buscador" class="sidebar-section search-panel">
+            <h2 class="sidebar-title">
+                <img src="{% static 'assets/icons/lupa.webp' %}" alt="">
+                ENCUENTRA TU<br>FUTURA PROPIEDAD
+            </h2>
+            <p class="sidebar-caption">Selecciona tus criterios de búsqueda</p>
+            <form method="get" action="{% url 'home' %}" class="property-search">
+                <input type="hidden" name="buscar" value="1">
+                <div class="mb-2">
+                    <label class="form-label" for="{{ search_form.ciudad.id_for_label }}">Ciudad / Zona</label>
+                    {{ search_form.ciudad }}
+                </div>
+                <div class="mb-2">
+                    <label class="form-label" for="{{ search_form.estatus.id_for_label }}">Tipo de operación</label>
+                    {{ search_form.estatus }}
+                </div>
+                <div class="mb-2">
+                    <span class="form-label">Rango de precio (MXN)</span>
+                    <div class="row gx-2">
+                        <div class="col-6">
+                            <label class="visually-hidden" for="{{ search_form.precio_min.id_for_label }}">Precio desde</label>
+                            {{ search_form.precio_min }}
+                        </div>
+                        <div class="col-6">
+                            <label class="visually-hidden" for="{{ search_form.precio_max.id_for_label }}">Precio hasta</label>
+                            {{ search_form.precio_max }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row gx-2">
+                    <div class="col-6 mb-2">
+                        <label class="form-label" for="{{ search_form.recamaras.id_for_label }}">Recámaras</label>
+                        {{ search_form.recamaras }}
+                    </div>
+                    <div class="col-6 mb-2">
+                        <label class="form-label" for="{{ search_form.banos.id_for_label }}">Baños</label>
+                        {{ search_form.banos }}
+                    </div>
+                </div>
+                <button class="btn search-button w-100" type="submit">
+                    <img src="{% static 'assets/icons/lupa.webp' %}" alt="">
+                    Buscar
+                </button>
+            </form>
+        </section>
+
+        <section class="sidebar-section latest-info">
+            <h2 class="sidebar-title">INFORMACIÓN DE ÚLTIMA HORA</h2>
+            <p>¿Buscas una propiedad o deseas poner una vivienda en venta?</p>
+            <a href="{% url 'contacto' %}">Ponte en contacto con Multicasa <span aria-hidden="true">»</span></a>
+            <hr>
+            <p>Consulta el catálogo y envíanos tus dudas. Nuestro equipo puede orientarte sobre los siguientes pasos.</p>
+        </section>
+
+        <div class="sidebar-contact d-flex align-items-center">
+            <img src="{% static 'assets/icons/conectados.webp' %}" alt="">
+            <span>Atención personalizada<br><strong>Estamos para ayudarte</strong></span>
+        </div>
+    </aside>
+</div>
 {% endblock %}

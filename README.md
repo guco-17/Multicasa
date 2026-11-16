@@ -71,6 +71,15 @@ DB_PORT=3306
 - `static/`: archivos CSS y assets generales
 - `media/`: imágenes cargadas por el administrador
 
+## Interfaz y recursos visuales
+
+- La página principal reproduce la composición del diseño de Bienes Raíces Multicasa
+  con Bootstrap 5.3.3 y estilos propios en `static/css/styles.css`.
+- Los recursos del diseño se encuentran en `static/assets/` y se sirven mediante
+  la etiqueta `{% static %}` de Django.
+- Bootstrap CSS y JavaScript se cargan desde jsDelivr; para ver el diseño completo,
+  el navegador necesita acceso a Internet.
+
 ## Requisitos cubiertos
 
 - Patrón MTV de Django
