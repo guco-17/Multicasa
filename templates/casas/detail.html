@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ casa.titulo }} | Multicasa{% endblock %}
+
+{% block content %}
+<section class="property-detail-page">
+    <a class="property-detail-back" href="{% url 'home' %}#propiedades">
+        <span aria-hidden="true">←</span> Volver a propiedades
+    </a>
+
+    <header class="property-detail-header">
+        <div class="property-detail-title">
+            <span class="property-detail-status{% if casa.estatus == 'vendida' %} property-detail-status-sold{% endif %}">
+                {{ casa.get_estatus_display }}
+            </span>
+            <h1>{{ casa.titulo }}</h1>
+            <p class="property-detail-location">{{ casa.direccion }}, {{ casa.ciudad }} · {{ casa.zona }}</p>
+        </div>
+        <div class="property-detail-price">
+            <span>Precio</span>
+            <strong>${{ casa.precio }}</strong>
+        </div>
+    </header>
+
+    {% with imagenes=casa.imagenes.all %}
+        {% if imagenes %}
+            <div
+                id="propertyImageCarousel"
+                class="carousel slide property-detail-carousel"
+                data-bs-ride="{% if imagenes|length > 1 %}carousel{% else %}false{% endif %}"
+                data-bs-interval="5000"
+                data-bs-pause="hover"
+                data-bs-touch="true"
+                data-bs-wrap="true"
+                aria-label="Galería de imágenes de {{ casa.titulo }}">
+                {% if imagenes|length > 1 %}
+                    <div class="carousel-indicators">
+                        {% for imagen in imagenes %}
+                            <button
+                                type="button"
+                                data-bs-target="#propertyImageCarousel"
+                                data-bs-slide-to="{{ forloop.counter0 }}"
+                                {% if forloop.first %}class="active" aria-current="true"{% endif %}
+                                aria-label="Mostrar imagen {{ forloop.counter }}"></button>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <div class="carousel-inner">
+                    {% for imagen in imagenes %}
+                        <div class="carousel-item{% if forloop.first %} active{% endif %}">
+                            <figure class="property-detail-photo">
+                                <img
+                                    src="{{ imagen.ruta_imagen.url }}"
+                                    alt="Fotografía de {{ casa.titulo }}{% if imagen.es_principal %}, imagen principal{% endif %}"
+                                    loading="{% if forloop.first %}eager{% else %}lazy{% endif %}">
+                                {% if imagen.es_principal %}<figcaption>Imagen principal</figcaption>{% endif %}
+                            </figure>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                {% if imagenes|length > 1 %}
+                    <button
+                        class="carousel-control-prev"
+                        type="button"
+                        data-bs-target="#propertyImageCarousel"
+                        data-bs-slide="prev"
+                        aria-label="Mostrar imagen anterior">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Anterior</span>
+                    </button>
+                    <button
+                        class="carousel-control-next"
+                        type="button"
+                        data-bs-target="#propertyImageCarousel"
+                        data-bs-slide="next"
+                        aria-label="Mostrar imagen siguiente">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Siguiente</span>
+                    </button>
+                {% endif %}
+            </div>
+        {% else %}
+            <div class="property-detail-placeholder">
+                <span>Esta propiedad no tiene imágenes disponibles.</span>
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <div class="property-detail-content-grid">
+        <div class="property-detail-main">
+            <section class="property-detail-card">
+                <h2>Descripción</h2>
+                <p class="property-detail-description">{{ casa.descripcion|linebreaksbr }}</p>
+            </section>
+
+            <section class="property-detail-card">
+                <h2>Características y datos</h2>
+                <dl class="property-detail-facts">
+                    <div><dt>ID de registro</dt><dd>{{ casa.pk }}</dd></div>
+                    <div><dt>Recámaras</dt><dd>{{ casa.recamaras }}</dd></div>
+                    <div><dt>Baños</dt><dd>{{ casa.banos }}</dd></div>
+                    <div><dt>Metros de construcción</dt><dd>{{ casa.metros_construccion }} m²</dd></div>
+                    <div><dt>Metros de terreno</dt><dd>{{ casa.metros_terreno }} m²</dd></div>
+                    <div><dt>Latitud</dt><dd>{{ casa.latitud }}</dd></div>
+                    <div><dt>Longitud</dt><dd>{{ casa.longitud }}</dd></div>
+                    <div><dt>Fecha de registro</dt><dd>{{ casa.fecha_registro|date:'d/m/Y H:i' }}</dd></div>
+                    <div><dt>Activa</dt><dd>{{ casa.activo|yesno:'Sí,No' }}</dd></div>
+                </dl>
+            </section>
+        </div>
+
+        <aside class="property-detail-sidebar">
+            <section class="property-contact-card">
+                <h2>¿Te interesa esta propiedad?</h2>
+                <p>Contáctanos para solicitar información o agendar una visita.</p>
+                {% if casa.estatus == 'en_venta' %}
+                    <a class="property-contact-button" href="{% url 'contacto' %}?casa={{ casa.pk }}">
+                        Consultar o agendar visita
+                    </a>
+                {% else %}
+                    <a class="property-contact-button" href="{% url 'contacto' %}">
+                        Contactar a Multicasa
+                    </a>
+                {% endif %}
+            </section>
+
+            <section class="property-detail-card property-map-card">
+                <div class="property-map-heading">
+                    <div>
+                        <h2>Ubicación</h2>
+                        <p>{{ casa.direccion }}, {{ casa.ciudad }}</p>
+                    </div>
+                    <a
+                        class="property-map-link"
+                        href="https://www.google.com/maps/search/?api=1&amp;query={{ casa.latitud }},{{ casa.longitud }}"
+                        target="_blank"
+                        rel="noopener noreferrer">
+                        Abrir mapa
+                    </a>
+                </div>
+                <iframe
+                    class="property-map"
+                    src="https://maps.google.com/maps?q={{ casa.latitud }},{{ casa.longitud }}&amp;z=15&amp;output=embed"
+                    title="Mapa de ubicación de {{ casa.titulo }}"
+                    loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade"
+                    allowfullscreen></iframe>
+            </section>
+        </aside>
+    </div>
+</section>
+{% endblock %}

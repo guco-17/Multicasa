@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ page_title }} | Administración Multicasa{% endblock %}
+
+{% block content %}
+<section class="panel management-panel management-delete-panel">
+    <a class="management-back-link" href="{% url list_url_name %}">Volver al listado</a>
+    <h1>{{ page_title }}</h1>
+    <p>¿Confirmas que deseas eliminar <strong>{{ object }}</strong>? Esta acción no se puede deshacer.</p>
+    <form method="post">
+        {% csrf_token %}
+        <div class="management-form-actions">
+            <button class="management-button management-button-danger" type="submit">Eliminar</button>
+            <a class="management-button management-button-secondary" href="{% url list_url_name %}">Cancelar</a>
+        </div>
+    </form>
+</section>
+{% endblock %}

@@ -71,6 +71,17 @@ DB_PORT=3306
 - `static/`: archivos CSS y assets generales
 - `media/`: imágenes cargadas por el administrador
 
+## Administración
+
+El panel privado de Django está disponible en `/admin/`. Inicia sesión con un
+superusuario creado mediante `python manage.py createsuperuser` para administrar
+casas, imágenes y mensajes de contacto. Django también incluye la administración
+de usuarios y grupos; las cuentas sin acceso de administrador no pueden entrar
+al panel administrativo. El dashboard del sitio, en `/dashboard/`, ofrece una
+interfaz integrada con el diseño de Multicasa para consultar, crear, editar y
+eliminar casas, imágenes y mensajes. Cada operación requiere los permisos de
+modelo de Django.
+
 ## Interfaz y recursos visuales
 
 - La página principal reproduce la composición del diseño de Bienes Raíces Multicasa

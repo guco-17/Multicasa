@@ -1,10 +1,11 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Q
-from django.views.generic import TemplateView
+from django.db.models import Prefetch, Q
+from django.views.generic import DetailView, TemplateView
 from rest_framework import permissions, viewsets
 
+from apps.gestion.mixins import StaffRequiredMixin
+
 from .forms import CasaBusquedaForm
-from .models import Casa
+from .models import Casa, Imagen
 from .serializers import CasaSerializer
 
 
@@ -15,11 +16,18 @@ class HomeView(TemplateView):
         context = super().get_context_data(**kwargs)
         search_performed = 'buscar' in self.request.GET
         form = CasaBusquedaForm(self.request.GET if search_performed else None)
-        casas = Casa.objects.none()
+        casas_publicadas = Casa.objects.filter(activo=True).prefetch_related(
+            Prefetch(
+                'imagenes',
+                queryset=Imagen.objects.filter(es_principal=True).order_by('pk'),
+                to_attr='imagenes_principales',
+            )
+        )
+        casas = casas_publicadas.filter(estatus='en_venta')
 
         if search_performed and form.is_valid():
             filters = form.cleaned_data
-            casas = Casa.objects.filter(activo=True)
+            casas = casas_publicadas
 
             if filters['ciudad']:
                 casas = casas.filter(
@@ -39,11 +47,25 @@ class HomeView(TemplateView):
 
         context['search_form'] = form
         context['search_performed'] = search_performed
-        context['casas'] = casas[:12]
+        context['casas'] = casas
         return context
 
 
-class DashboardView(LoginRequiredMixin, TemplateView):
+class CasaDetailView(DetailView):
+    model = Casa
+    template_name = 'casas/detail.html'
+    context_object_name = 'casa'
+
+    def get_queryset(self):
+        return Casa.objects.filter(activo=True).prefetch_related(
+            Prefetch(
+                'imagenes',
+                queryset=Imagen.objects.order_by('-es_principal', 'pk'),
+            )
+        )
+
+
+class DashboardView(StaffRequiredMixin, TemplateView):
     template_name = 'casas/dashboard.html'
 
     def get_context_data(self, **kwargs):

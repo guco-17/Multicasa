@@ -3,10 +3,98 @@ from decimal import Decimal
 from django.test import TestCase
 from django.urls import reverse
 
-from apps.casas.models import Casa
+from apps.casas.models import Casa, Imagen
 
 
 class CasaSearchViewTests(TestCase):
+    def test_home_shows_active_houses_for_sale_without_search_filters(self):
+        Casa.objects.create(
+            titulo='Casa disponible',
+            descripcion='Casa de prueba',
+            precio=Decimal('1850000.00'),
+            direccion='Calle de prueba 123',
+            ciudad='Saltillo',
+            zona='Centro',
+            latitud=Decimal('25.4383000'),
+            longitud=Decimal('-100.9737000'),
+            recamaras=3,
+            banos=Decimal('2.0'),
+            metros_construccion=Decimal('180.00'),
+            metros_terreno=Decimal('220.00'),
+        )
+        Casa.objects.create(
+            titulo='Casa vendida',
+            descripcion='Casa vendida de prueba',
+            precio=Decimal('1850000.00'),
+            direccion='Calle de prueba 456',
+            ciudad='Saltillo',
+            zona='Centro',
+            latitud=Decimal('25.4383000'),
+            longitud=Decimal('-100.9737000'),
+            recamaras=3,
+            banos=Decimal('2.0'),
+            metros_construccion=Decimal('180.00'),
+            metros_terreno=Decimal('220.00'),
+            estatus='vendida',
+        )
+        Casa.objects.create(
+            titulo='Casa desactivada',
+            descripcion='Casa desactivada de prueba',
+            precio=Decimal('1850000.00'),
+            direccion='Calle de prueba 789',
+            ciudad='Saltillo',
+            zona='Centro',
+            latitud=Decimal('25.4383000'),
+            longitud=Decimal('-100.9737000'),
+            recamaras=3,
+            banos=Decimal('2.0'),
+            metros_construccion=Decimal('180.00'),
+            metros_terreno=Decimal('220.00'),
+            activo=False,
+        )
+
+        response = self.client.get(reverse('home'))
+
+        self.assertContains(response, 'Casa disponible')
+        self.assertContains(
+            response,
+            reverse('casa_detalle', args=[Casa.objects.get(titulo='Casa disponible').pk]),
+        )
+        self.assertNotContains(response, 'Casa vendida')
+        self.assertNotContains(response, 'Casa desactivada')
+        self.assertContains(response, 'Imagen no disponible')
+
+    def test_home_card_uses_only_the_principal_house_image(self):
+        casa = Casa.objects.create(
+            titulo='Casa con fotografías',
+            descripcion='Casa de prueba',
+            precio=Decimal('1850000.00'),
+            direccion='Calle de prueba 123',
+            ciudad='Saltillo',
+            zona='Centro',
+            latitud=Decimal('25.4383000'),
+            longitud=Decimal('-100.9737000'),
+            recamaras=3,
+            banos=Decimal('2.0'),
+            metros_construccion=Decimal('180.00'),
+            metros_terreno=Decimal('220.00'),
+        )
+        Imagen.objects.create(
+            casa=casa,
+            ruta_imagen='casas/principal.jpg',
+            es_principal=True,
+        )
+        Imagen.objects.create(
+            casa=casa,
+            ruta_imagen='casas/secundaria.jpg',
+            es_principal=False,
+        )
+
+        response = self.client.get(reverse('home'))
+
+        self.assertContains(response, '/media/casas/principal.jpg')
+        self.assertNotContains(response, '/media/casas/secundaria.jpg')
+
     def test_search_filters_houses_by_city_and_maximum_price(self):
         Casa.objects.create(
             titulo='Casa en Saltillo',
@@ -44,3 +132,93 @@ class CasaSearchViewTests(TestCase):
 
         self.assertContains(response, 'Casa en Saltillo')
         self.assertNotContains(response, 'Casa en Monterrey')
+
+
+class CasaDetailViewTests(TestCase):
+    def crear_casa(self, **overrides):
+        data = {
+            'titulo': 'Casa de detalle',
+            'descripcion': 'Descripción completa de la propiedad.',
+            'precio': Decimal('1850000.00'),
+            'direccion': 'Calle de prueba 123',
+            'ciudad': 'Saltillo',
+            'zona': 'Centro',
+            'latitud': Decimal('25.4383000'),
+            'longitud': Decimal('-100.9737000'),
+            'recamaras': 3,
+            'banos': Decimal('2.0'),
+            'metros_construccion': Decimal('180.00'),
+            'metros_terreno': Decimal('220.00'),
+        }
+        data.update(overrides)
+        return Casa.objects.create(**data)
+
+    def test_detail_shows_all_house_fields_google_map_and_contact_link(self):
+        casa = self.crear_casa()
+        Imagen.objects.create(
+            casa=casa,
+            ruta_imagen='casas/principal.jpg',
+            es_principal=True,
+        )
+        Imagen.objects.create(
+            casa=casa,
+            ruta_imagen='casas/secundaria.jpg',
+            es_principal=False,
+        )
+
+        response = self.client.get(reverse('casa_detalle', args=[casa.pk]))
+
+        self.assertEqual(response.status_code, 200)
+        for value in (
+            'Casa de detalle',
+            'Descripción completa de la propiedad.',
+            'ID de registro',
+            str(casa.pk),
+            '1850000.00',
+            'Calle de prueba 123',
+            'Saltillo',
+            'Centro',
+            '25.4383000',
+            '-100.9737000',
+            '3',
+            '2.0',
+            '180.00',
+            '220.00',
+            'En venta',
+            'Activa',
+        ):
+            with self.subTest(value=value):
+                self.assertContains(response, value)
+        self.assertContains(response, '/media/casas/principal.jpg')
+        self.assertContains(response, '/media/casas/secundaria.jpg')
+        self.assertContains(response, 'data-bs-ride="carousel"')
+        self.assertContains(response, 'data-bs-interval="5000"')
+        self.assertContains(response, 'data-bs-slide="prev"')
+        self.assertContains(response, 'data-bs-slide="next"')
+        self.assertEqual(
+            response.content.decode().count('carousel-item active'),
+            1,
+        )
+        self.assertContains(response, 'maps.google.com/maps?q=25.4383000,-100.9737000')
+        self.assertContains(response, f'/contacto/?casa={casa.pk}')
+
+    def test_inactive_house_detail_is_not_public(self):
+        casa = self.crear_casa(activo=False)
+
+        response = self.client.get(reverse('casa_detalle', args=[casa.pk]))
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_single_image_does_not_show_carousel_controls(self):
+        casa = self.crear_casa()
+        Imagen.objects.create(
+            casa=casa,
+            ruta_imagen='casas/unica.jpg',
+            es_principal=True,
+        )
+
+        response = self.client.get(reverse('casa_detalle', args=[casa.pk]))
+
+        self.assertContains(response, '/media/casas/unica.jpg')
+        self.assertNotContains(response, 'data-bs-slide="prev"')
+        self.assertNotContains(response, 'data-bs-slide="next"')
