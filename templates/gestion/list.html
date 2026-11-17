@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ page_title }} | Administración Multicasa{% endblock %}
+
+{% block content %}
+<section class="panel management-panel">
+    <div class="management-heading">
+        <div>
+            <a class="management-back-link" href="{% url 'dashboard' %}">Administración</a>
+            <h1>{{ page_title }}</h1>
+            <p>Consulta y administra los registros de Multicasa.</p>
+        </div>
+        {% if can_add %}
+            <a class="management-button management-button-primary" href="{% url create_url_name %}">
+                Agregar {{ page_title|lower }}
+            </a>
+        {% endif %}
+    </div>
+
+    <form class="management-search" method="get">
+        <label for="management-search">Buscar</label>
+        <input
+            id="management-search"
+            type="search"
+            name="q"
+            value="{{ request.GET.q }}"
+            placeholder="Escribe para filtrar...">
+        <button class="management-button management-button-secondary" type="submit">Buscar</button>
+        {% if request.GET.q %}
+            <a class="management-clear-link" href="{% url list_url_name %}">Limpiar</a>
+        {% endif %}
+    </form>
+
+    <div class="management-table-wrap">
+        <table class="management-table">
+            <thead>
+                <tr>
+                    {% for column in columns %}<th scope="col">{{ column }}</th>{% endfor %}
+                    <th scope="col">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in rows %}
+                    <tr>
+                        {% for value in row.values %}<td>{{ value }}</td>{% endfor %}
+                        <td class="management-actions">
+                            {% if can_change %}
+                                <a class="management-action-link" href="{% url update_url_name row.object.pk %}">Editar</a>
+                            {% endif %}
+                            {% if can_delete %}
+                                <a class="management-action-link management-action-danger" href="{% url delete_url_name row.object.pk %}">Eliminar</a>
+                            {% endif %}
+                            {% if not can_change and not can_delete %}<span class="management-muted">Solo lectura</span>{% endif %}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td class="management-empty" colspan="{{ columns|length|add:1 }}">
+                            {% if request.GET.q %}No se encontraron registros para esa búsqueda.{% else %}Aún no hay registros.{% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if is_paginated %}
+        <nav class="management-pagination" aria-label="Paginación">
+            {% if page_obj.has_previous %}
+                <a href="?q={{ request.GET.q|urlencode }}&page={{ page_obj.previous_page_number }}">Anterior</a>
+            {% endif %}
+            <span>Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+            {% if page_obj.has_next %}
+                <a href="?q={{ request.GET.q|urlencode }}&page={{ page_obj.next_page_number }}">Siguiente</a>
+            {% endif %}
+        </nav>
+    {% endif %}
+</section>
+{% endblock %}

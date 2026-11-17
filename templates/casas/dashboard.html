@@ -19,5 +19,41 @@
             <p>{{ casas_vendidas }}</p>
         </div>
     </div>
+
+    <div class="management-section">
+        <div class="management-section-heading">
+            <h2>Gestión del catálogo</h2>
+            <p>Administra la información que se muestra en Multicasa.</p>
+        </div>
+        <div class="management-card-grid">
+            {% if perms.casas.view_casa %}
+                <a class="management-card" href="{% url 'gestion:casas' %}">
+                    <span class="management-card-icon" aria-hidden="true">⌂</span>
+                    <span>
+                        <strong>Casas</strong>
+                        <small>Propiedades, precios y estatus</small>
+                    </span>
+                </a>
+            {% endif %}
+            {% if perms.casas.view_imagen %}
+                <a class="management-card" href="{% url 'gestion:imagenes' %}">
+                    <span class="management-card-icon" aria-hidden="true">▧</span>
+                    <span>
+                        <strong>Imágenes</strong>
+                        <small>Fotografías asociadas a casas</small>
+                    </span>
+                </a>
+            {% endif %}
+            {% if perms.contacto.view_mensajecontacto %}
+                <a class="management-card" href="{% url 'gestion:mensajes' %}">
+                    <span class="management-card-icon" aria-hidden="true">✉</span>
+                    <span>
+                        <strong>Mensajes de contacto</strong>
+                        <small>Solicitudes recibidas desde el sitio</small>
+                    </span>
+                </a>
+            {% endif %}
+        </div>
+    </div>
 </section>
 {% endblock %}

@@ -2,7 +2,19 @@ from decimal import Decimal
 
 from django import forms
 
-from .models import Casa
+from .models import Casa, Imagen
+
+
+class CasaGestionForm(forms.ModelForm):
+    class Meta:
+        model = Casa
+        fields = '__all__'
+
+
+class ImagenGestionForm(forms.ModelForm):
+    class Meta:
+        model = Imagen
+        fields = '__all__'
 
 
 class CasaBusquedaForm(forms.Form):
@@ -21,6 +33,7 @@ class CasaBusquedaForm(forms.Form):
         label='Tipo de operación',
         choices=[('', 'Cualquiera'), *Casa.ESTATUS_CHOICES],
         required=False,
+        initial='en_venta',
         widget=forms.Select(attrs={'class': 'form-select form-select-sm'}),
     )
     precio_min = forms.DecimalField(

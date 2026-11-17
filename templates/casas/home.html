@@ -76,35 +76,67 @@
             <a class="more-link" href="{% url 'contacto' %}">Contáctanos para más información <span aria-hidden="true">»</span></a>
         </section>
 
-        {% if search_performed %}
-            <section id="resultados" class="content-section search-results" aria-live="polite">
-                <h2 class="section-heading">RESULTADOS DE BÚSQUEDA</h2>
-                {% if search_form.errors %}
-                    <div class="alert alert-warning py-2" role="alert">
-                        Revisa los filtros ingresados.
-                        {{ search_form.non_field_errors }}
-                        {% for field in search_form %}
-                            {% for error in field.errors %}<div>{{ field.label }}: {{ error }}</div>{% endfor %}
-                        {% endfor %}
-                    </div>
-                {% elif casas %}
-                    <div class="list-group">
-                        {% for casa in casas %}
-                            <article class="list-group-item property-result">
-                                <div class="d-flex justify-content-between flex-wrap gap-2">
+        <section
+            id="{% if search_performed %}resultados{% else %}propiedades{% endif %}"
+            class="content-section search-results"
+            aria-live="polite">
+            <h2 class="section-heading">
+                {% if search_performed %}RESULTADOS DE BÚSQUEDA{% else %}PROPIEDADES EN VENTA{% endif %}
+            </h2>
+            {% if search_form.errors %}
+                <div class="alert alert-warning py-2" role="alert">
+                    Revisa los filtros ingresados.
+                    {{ search_form.non_field_errors }}
+                    {% for field in search_form %}
+                        {% for error in field.errors %}<div>{{ field.label }}: {{ error }}</div>{% endfor %}
+                    {% endfor %}
+                </div>
+            {% elif casas %}
+                <div class="property-grid">
+                    {% for casa in casas %}
+                        <article class="property-card">
+                            {% with imagen=casa.imagenes_principales|first %}
+                                <div class="property-card-image">
+                                    {% if imagen %}
+                                        <img
+                                            src="{{ imagen.ruta_imagen.url }}"
+                                            alt="Imagen principal de {{ casa.titulo }}"
+                                            loading="lazy">
+                                    {% else %}
+                                        <div class="property-card-placeholder">
+                                            <span>Imagen no disponible</span>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endwith %}
+                            <div class="property-card-body">
+                                <div class="property-card-heading">
                                     <h3>{{ casa.titulo }}</h3>
                                     <strong class="property-price">${{ casa.precio }}</strong>
                                 </div>
-                                <p>{{ casa.ciudad }} · {{ casa.zona }} · {{ casa.estatus }}</p>
-                                <p class="mb-0">{{ casa.recamaras }} recámaras · {{ casa.banos }} baños · {{ casa.metros_construccion }} m² de construcción</p>
-                            </article>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    <p class="search-empty">No encontramos propiedades con esos filtros. Intenta ampliar tu búsqueda.</p>
-                {% endif %}
-            </section>
-        {% endif %}
+                                <p class="property-card-location">{{ casa.ciudad }} · {{ casa.zona }}</p>
+                                <p class="property-card-details">
+                                    {{ casa.recamaras }} recámaras
+                                    <span aria-hidden="true">·</span>
+                                    {{ casa.banos }} baños
+                                    <span aria-hidden="true">·</span>
+                                    {{ casa.metros_construccion }} m² construcción
+                                </p>
+                                <span class="property-card-status">{{ casa.get_estatus_display }}</span>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="search-empty">
+                    {% if search_performed %}
+                        No encontramos propiedades con esos filtros. Intenta ampliar tu búsqueda.
+                    {% else %}
+                        Por el momento no hay propiedades disponibles en venta.
+                    {% endif %}
+                </p>
+            {% endif %}
+        </section>
     </section>
 
     <aside class="col-lg-3 sidebar">

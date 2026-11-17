@@ -1,17 +1,61 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Contacto | Multicasa{% endblock %}
 
 {% block content %}
 <section class="form-panel">
     <h1>Formulario de contacto</h1>
+    <p class="contact-intro">
+        Cuéntanos qué propiedad te interesa o déjalo en blanco si tu consulta es general.
+    </p>
     {% if request.GET.success %}
         <p class="success-message">Tu mensaje se ha enviado correctamente.</p>
     {% endif %}
-    <form method="post">
+    <form method="post" class="contact-form">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Enviar</button>
+        {% if form.non_field_errors %}
+            <div class="contact-errors" role="alert">{{ form.non_field_errors }}</div>
+        {% endif %}
+        <div
+            class="contact-field contact-field-wide house-search-field"
+            data-house-search
+            data-search-url="{% url 'contacto_casas_buscar' %}">
+            {{ form.casa }}
+            {{ form.casa_busqueda.label_tag }}
+            {{ form.casa_busqueda }}
+            <div
+                id="casa-search-results"
+                class="house-search-results"
+                role="listbox"
+                aria-label="Propiedades disponibles"
+                data-house-search-results
+                hidden></div>
+            <p class="house-search-status" data-house-search-status role="status" aria-live="polite"></p>
+            {% if form.casa_busqueda.errors %}
+                <div class="contact-errors" role="alert">{{ form.casa_busqueda.errors }}</div>
+            {% endif %}
+            {% if form.casa.errors %}
+                <div class="contact-errors" role="alert">{{ form.casa.errors }}</div>
+            {% endif %}
+        </div>
+        {% for field in form %}
+            {% if field.name != 'casa' and field.name != 'casa_busqueda' %}
+                <div class="contact-field{% if field.name == 'mensaje' %} contact-field-wide{% endif %}">
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {% if field.help_text %}<small>{{ field.help_text }}</small>{% endif %}
+                    {% if field.errors %}<div class="contact-errors" role="alert">{{ field.errors }}</div>{% endif %}
+                </div>
+            {% endif %}
+        {% endfor %}
+        <div class="contact-form-actions">
+            <button type="submit">Enviar mensaje</button>
+        </div>
     </form>
 </section>
+{% endblock %}
+
+{% block page_scripts %}
+    <script src="{% static 'js/contacto.js' %}" defer></script>
 {% endblock %}

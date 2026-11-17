@@ -346,18 +346,89 @@ body {
     object-fit: contain;
 }
 
-.property-result h3 {
-    margin: 0;
-    color: var(--multicasa-blue);
-    font-size: 14px;
-}
-
-.property-result p {
-    margin: 5px 0;
-}
-
 .property-price {
     color: #4b791d;
+}
+
+.property-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+}
+
+.property-card {
+    overflow: hidden;
+    border: 1px solid #d5e3e9;
+    background: #fff;
+    box-shadow: 0 2px 6px rgb(18 69 99 / 7%);
+}
+
+.property-card-image {
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    background: #edf5f8;
+}
+
+.property-card-image img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.property-card-placeholder {
+    display: grid;
+    width: 100%;
+    height: 100%;
+    place-items: center;
+    color: #71838c;
+    font-size: 10px;
+}
+
+.property-card-body {
+    padding: 11px 12px 12px;
+}
+
+.property-card-heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.property-card-heading h3 {
+    margin: 0;
+    color: var(--multicasa-blue);
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.property-card-heading .property-price {
+    flex-shrink: 0;
+    font-size: 12px;
+}
+
+.property-card-location {
+    margin: 6px 0;
+    color: #68777e;
+    font-size: 10px;
+}
+
+.property-card-details {
+    margin: 0 0 9px;
+    color: #394b55;
+    font-size: 10px;
+    line-height: 1.6;
+}
+
+.property-card-status {
+    display: inline-block;
+    padding: 3px 7px;
+    border-radius: 2px;
+    background: #edf5e6;
+    color: #4b741f;
+    font-size: 9px;
+    font-weight: 700;
 }
 
 .search-empty {
@@ -366,12 +437,534 @@ body {
     background: #f6f8f8;
 }
 
+.form-panel {
+    max-width: 760px;
+    margin: 24px auto;
+    padding: 24px;
+    border: 1px solid #d5e3e9;
+    background: #fff;
+    box-shadow: 0 2px 8px rgb(18 69 99 / 7%);
+}
+
+.form-panel h1 {
+    margin: 0 0 7px;
+    color: var(--multicasa-blue);
+    font-size: 21px;
+}
+
+.contact-intro {
+    margin: 0 0 18px;
+    color: #68777e;
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+.contact-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px 16px;
+}
+
+.contact-field {
+    min-width: 0;
+}
+
+.contact-field-wide,
+.contact-form-actions {
+    grid-column: 1 / -1;
+}
+
+.house-search-field {
+    position: relative;
+}
+
+.house-search-results {
+    position: absolute;
+    z-index: 20;
+    top: calc(100% - 1px);
+    right: 0;
+    left: 0;
+    max-height: 260px;
+    overflow-y: auto;
+    border: 1px solid #cbd9df;
+    background: #fff;
+    box-shadow: 0 4px 10px rgb(18 69 99 / 14%);
+}
+
+.house-search-option {
+    display: block;
+    width: 100%;
+    padding: 9px 11px;
+    border: 0;
+    border-bottom: 1px solid #e1eaee;
+    background: #fff;
+    color: #30343a;
+    text-align: left;
+    cursor: pointer;
+}
+
+.house-search-option:hover,
+.house-search-option:focus-visible {
+    background: #edf5f8;
+}
+
+.house-search-option strong,
+.house-search-option span {
+    display: block;
+}
+
+.house-search-option strong {
+    color: var(--multicasa-blue);
+    font-size: 11px;
+}
+
+.house-search-option span,
+.house-search-status {
+    margin: 4px 0 0;
+    color: #68777e;
+    font-size: 10px;
+}
+
+.contact-field label {
+    display: block;
+    margin-bottom: 5px;
+    color: #344c59;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.contact-field .form-control,
+.contact-field .form-select {
+    min-height: 36px;
+    border-color: #cbd9df;
+    border-radius: 2px;
+    font-size: 11px;
+}
+
+.contact-field textarea.form-control {
+    min-height: 110px;
+    resize: vertical;
+}
+
+.contact-field small {
+    display: block;
+    margin-top: 5px;
+    color: #68777e;
+    font-size: 10px;
+    line-height: 1.5;
+}
+
+.contact-errors,
+.success-message {
+    font-size: 11px;
+}
+
+.contact-errors {
+    margin-top: 5px;
+    color: #a34232;
+}
+
+.contact-errors ul {
+    margin: 0;
+    padding-left: 17px;
+}
+
+.success-message {
+    padding: 9px 11px;
+    border-left: 3px solid var(--multicasa-green);
+    background: #f2f7ed;
+    color: #42651e;
+}
+
+.contact-form-actions button {
+    min-height: 36px;
+    padding: 7px 15px;
+    border: 1px solid #0879a7;
+    border-radius: 2px;
+    background: linear-gradient(#19a4d0, #0879a7);
+    color: #fff;
+    font: inherit;
+    font-size: 11px;
+    cursor: pointer;
+}
+
+.contact-form-actions button:hover,
+.contact-form-actions button:focus-visible {
+    background: var(--multicasa-blue);
+}
+
 .site-footer {
     min-height: 45px;
     gap: 10px;
     padding: 7px 15px;
     background: var(--multicasa-blue) url("../assets/backgrounds/header.png") repeat-x;
     color: #d5e5ed;
+}
+
+.panel {
+    margin: 22px auto;
+    padding: 22px;
+    background: #fff;
+}
+
+.panel h1 {
+    margin: 0 0 15px;
+    color: var(--multicasa-blue);
+    font-size: 21px;
+}
+
+.stats-grid,
+.management-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 12px;
+}
+
+.stat-card,
+.management-card {
+    border: 1px solid #d5e3e9;
+    border-top: 3px solid var(--multicasa-cyan);
+    background: #f7fafb;
+}
+
+.stat-card {
+    padding: 13px 15px;
+}
+
+.stat-card h3 {
+    margin: 0;
+    color: #53636b;
+    font-size: 11px;
+}
+
+.stat-card p {
+    margin: 7px 0 0;
+    color: var(--multicasa-blue);
+    font-size: 23px;
+    font-weight: 700;
+}
+
+.management-section {
+    margin-top: 27px;
+}
+
+.management-section-heading {
+    margin-bottom: 12px;
+}
+
+.management-section-heading h2 {
+    margin: 0 0 4px;
+    color: var(--multicasa-blue);
+    font-size: 16px;
+}
+
+.management-section-heading p,
+.management-heading p {
+    margin: 0;
+    color: #68777e;
+    font-size: 11px;
+}
+
+.management-card {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    min-height: 76px;
+    padding: 12px;
+    color: var(--multicasa-blue);
+    text-decoration: none;
+    transition: border-color .15s ease, transform .15s ease;
+}
+
+.management-card:hover,
+.management-card:focus-visible {
+    transform: translateY(-2px);
+    border-color: var(--multicasa-cyan);
+    color: var(--multicasa-blue-dark);
+}
+
+.management-card-icon {
+    display: grid;
+    width: 36px;
+    height: 36px;
+    flex: 0 0 36px;
+    place-items: center;
+    border-radius: 50%;
+    background: #e3f2f7;
+    color: var(--multicasa-cyan);
+    font-size: 20px;
+}
+
+.management-card strong,
+.management-card small {
+    display: block;
+}
+
+.management-card strong {
+    font-size: 12px;
+}
+
+.management-card small {
+    margin-top: 4px;
+    color: #68777e;
+    font-size: 10px;
+}
+
+.management-panel {
+    max-width: 1180px;
+    min-height: 420px;
+    padding: 24px;
+    border: 1px solid #d5e3e9;
+    box-shadow: 0 2px 8px rgb(18 69 99 / 7%);
+}
+
+.management-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 19px;
+}
+
+.management-heading h1 {
+    margin: 4px 0 6px;
+}
+
+.management-back-link,
+.management-clear-link {
+    color: #548121;
+    font-size: 10px;
+    text-decoration: underline;
+}
+
+.management-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 34px;
+    padding: 7px 12px;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    font: inherit;
+    font-size: 11px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.management-button-primary {
+    border-color: #0879a7;
+    background: linear-gradient(#19a4d0, #0879a7);
+    color: #fff;
+}
+
+.management-button-primary:hover,
+.management-button-primary:focus-visible {
+    background: var(--multicasa-blue);
+    color: #fff;
+}
+
+.management-button-secondary {
+    border-color: #cbd9df;
+    background: #f5f8f9;
+    color: var(--multicasa-blue);
+}
+
+.management-button-secondary:hover,
+.management-button-secondary:focus-visible {
+    background: #e7f0f3;
+    color: var(--multicasa-blue-dark);
+}
+
+.management-button-danger {
+    border-color: #b54936;
+    background: #b54936;
+    color: #fff;
+}
+
+.management-button-danger:hover,
+.management-button-danger:focus-visible {
+    background: #933a2b;
+    color: #fff;
+}
+
+.management-search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 13px;
+}
+
+.management-search label {
+    color: var(--multicasa-blue);
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.management-search input {
+    width: min(100%, 320px);
+    min-height: 34px;
+    padding: 6px 9px;
+    border: 1px solid #cbd9df;
+    border-radius: 2px;
+    font: inherit;
+    font-size: 11px;
+}
+
+.management-table-wrap {
+    overflow-x: auto;
+}
+
+.management-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+}
+
+.management-table th,
+.management-table td {
+    padding: 10px;
+    border-bottom: 1px solid #e1eaee;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.management-table th {
+    background: #edf5f8;
+    color: var(--multicasa-blue);
+    font-size: 10px;
+    white-space: nowrap;
+}
+
+.management-table tbody tr:hover {
+    background: #f8fbfc;
+}
+
+.management-actions {
+    display: flex;
+    gap: 11px;
+    white-space: nowrap;
+}
+
+.management-action-link {
+    color: #247eae;
+    text-decoration: underline;
+}
+
+.management-action-danger {
+    color: #a34232;
+}
+
+.management-muted,
+.management-empty {
+    color: #68777e;
+}
+
+.management-empty {
+    padding: 24px !important;
+    text-align: center !important;
+}
+
+.management-pagination {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 15px;
+    color: #68777e;
+    font-size: 10px;
+}
+
+.management-pagination a {
+    color: #247eae;
+}
+
+.management-form-panel {
+    max-width: 820px;
+}
+
+.management-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 13px 16px;
+}
+
+.management-field {
+    min-width: 0;
+}
+
+.management-field label {
+    display: block;
+    margin-bottom: 5px;
+    color: #344c59;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.management-field input:not([type="checkbox"]),
+.management-field select,
+.management-field textarea {
+    display: block;
+    width: 100%;
+    min-height: 35px;
+    padding: 7px 9px;
+    border: 1px solid #cbd9df;
+    border-radius: 2px;
+    background: #fff;
+    color: #30343a;
+    font: inherit;
+    font-size: 11px;
+}
+
+.management-field textarea {
+    min-height: 95px;
+    resize: vertical;
+}
+
+.management-field small {
+    display: block;
+    margin-top: 4px;
+    color: #68777e;
+    font-size: 10px;
+}
+
+.management-field-errors,
+.management-form-errors {
+    margin-top: 5px;
+    color: #a34232;
+    font-size: 10px;
+}
+
+.management-field-errors ul,
+.management-form-errors ul {
+    margin: 0;
+    padding-left: 17px;
+}
+
+.management-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.management-checkbox label {
+    margin: 0;
+}
+
+.management-form-actions {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    grid-column: 1 / -1;
+    margin-top: 7px;
+}
+
+.management-delete-panel {
+    max-width: 650px;
+}
+
+.management-delete-panel > p {
+    margin: 18px 0;
+    font-size: 12px;
+    line-height: 1.6;
 }
 
 .footer-brand img {
@@ -448,6 +1041,43 @@ body {
     .site-footer {
         justify-content: center !important;
         text-align: center;
+    }
+
+    .management-panel {
+        margin: 12px;
+        padding: 17px;
+    }
+
+    .management-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .management-search {
+        align-items: stretch;
+        flex-wrap: wrap;
+    }
+
+    .management-search input {
+        flex: 1 1 180px;
+    }
+
+    .management-form {
+        grid-template-columns: 1fr;
+    }
+
+    .form-panel {
+        margin: 12px;
+        padding: 18px;
+    }
+
+    .contact-form {
+        grid-template-columns: 1fr;
+    }
+
+    .contact-field-wide,
+    .contact-form-actions {
+        grid-column: auto;
     }
 }
 
