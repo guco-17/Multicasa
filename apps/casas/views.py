@@ -1,5 +1,5 @@
 from django.db.models import Prefetch, Q
-from django.views.generic import TemplateView
+from django.views.generic import DetailView, TemplateView
 from rest_framework import permissions, viewsets
 
 from apps.gestion.mixins import StaffRequiredMixin
@@ -49,6 +49,20 @@ class HomeView(TemplateView):
         context['search_performed'] = search_performed
         context['casas'] = casas
         return context
+
+
+class CasaDetailView(DetailView):
+    model = Casa
+    template_name = 'casas/detail.html'
+    context_object_name = 'casa'
+
+    def get_queryset(self):
+        return Casa.objects.filter(activo=True).prefetch_related(
+            Prefetch(
+                'imagenes',
+                queryset=Imagen.objects.order_by('-es_principal', 'pk'),
+            )
+        )
 
 
 class DashboardView(StaffRequiredMixin, TemplateView):

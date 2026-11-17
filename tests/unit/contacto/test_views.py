@@ -51,6 +51,16 @@ class ContactoFormViewTests(TestCase):
         self.assertContains(response, 'Casa que te interesa (opcional)')
         self.assertContains(response, 'Escribe el nombre o la dirección')
 
+    def test_contact_link_can_prefill_the_selected_house(self):
+        response = self.client.get(
+            reverse('contacto'),
+            {'casa': self.casa_disponible.pk},
+        )
+
+        self.assertContains(response, 'name="casa"')
+        self.assertContains(response, f'value="{self.casa_disponible.pk}"')
+        self.assertContains(response, self.casa_label(self.casa_disponible))
+
     def test_house_search_matches_name_or_address_and_only_returns_available_houses(self):
         response = self.client.get(
             reverse('contacto_casas_buscar'),

@@ -95,35 +95,41 @@
                 <div class="property-grid">
                     {% for casa in casas %}
                         <article class="property-card">
-                            {% with imagen=casa.imagenes_principales|first %}
-                                <div class="property-card-image">
-                                    {% if imagen %}
-                                        <img
-                                            src="{{ imagen.ruta_imagen.url }}"
-                                            alt="Imagen principal de {{ casa.titulo }}"
-                                            loading="lazy">
-                                    {% else %}
-                                        <div class="property-card-placeholder">
-                                            <span>Imagen no disponible</span>
-                                        </div>
-                                    {% endif %}
+                            <a
+                                class="property-card-link"
+                                href="{% url 'casa_detalle' casa.pk %}"
+                                aria-label="Ver detalle de {{ casa.titulo }}">
+                                {% with imagen=casa.imagenes_principales|first %}
+                                    <div class="property-card-image">
+                                        {% if imagen %}
+                                            <img
+                                                src="{{ imagen.ruta_imagen.url }}"
+                                                alt="Imagen principal de {{ casa.titulo }}"
+                                                loading="lazy">
+                                        {% else %}
+                                            <div class="property-card-placeholder">
+                                                <span>Imagen no disponible</span>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                {% endwith %}
+                                <div class="property-card-body">
+                                    <div class="property-card-heading">
+                                        <h3>{{ casa.titulo }}</h3>
+                                        <strong class="property-price">${{ casa.precio }}</strong>
+                                    </div>
+                                    <p class="property-card-location">{{ casa.ciudad }} · {{ casa.zona }}</p>
+                                    <p class="property-card-details">
+                                        {{ casa.recamaras }} recámaras
+                                        <span aria-hidden="true">·</span>
+                                        {{ casa.banos }} baños
+                                        <span aria-hidden="true">·</span>
+                                        {{ casa.metros_construccion }} m² construcción
+                                    </p>
+                                    <span class="property-card-status">{{ casa.get_estatus_display }}</span>
+                                    <span class="property-card-more">Ver detalle <span aria-hidden="true">»</span></span>
                                 </div>
-                            {% endwith %}
-                            <div class="property-card-body">
-                                <div class="property-card-heading">
-                                    <h3>{{ casa.titulo }}</h3>
-                                    <strong class="property-price">${{ casa.precio }}</strong>
-                                </div>
-                                <p class="property-card-location">{{ casa.ciudad }} · {{ casa.zona }}</p>
-                                <p class="property-card-details">
-                                    {{ casa.recamaras }} recámaras
-                                    <span aria-hidden="true">·</span>
-                                    {{ casa.banos }} baños
-                                    <span aria-hidden="true">·</span>
-                                    {{ casa.metros_construccion }} m² construcción
-                                </p>
-                                <span class="property-card-status">{{ casa.get_estatus_display }}</span>
-                            </div>
+                            </a>
                         </article>
                     {% endfor %}
                 </div>

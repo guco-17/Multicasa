@@ -42,6 +42,23 @@ class ContactoFormView(FormView):
     form_class = ContactoForm
     success_url = '/contacto/?success=1'
 
+    def get_initial(self):
+        initial = super().get_initial()
+        casa_id = self.request.GET.get('casa', '')
+        casa = None
+        if casa_id.isdecimal() and len(casa_id) <= 10:
+            casa = Casa.objects.filter(
+                pk=casa_id,
+                activo=True,
+                estatus='en_venta',
+            ).first()
+        if casa:
+            initial['casa'] = casa.pk
+            initial['casa_busqueda'] = (
+                f'{casa.titulo} — {casa.direccion}, {casa.ciudad}'
+            )
+        return initial
+
     def form_valid(self, form):
         form.save()
         send_mail(
