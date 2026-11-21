@@ -169,6 +169,63 @@
             <a class="more-link" href="{% url 'contacto' %}">Contáctanos para más información <span aria-hidden="true">»</span></a>
         </section>
 
+        <section id="multimedia" class="content-section multimedia-section" aria-label="Contenido multimedia de Multicasa">
+            <h2 class="section-heading">CONOCE MULTICASA: VIDEO PROMOCIONAL Y AUDIO</h2>
+            <p>
+                Descubre el objetivo y la finalidad de nuestra plataforma inmobiliaria, conoce nuestras
+                promociones vigentes y escucha los consejos clave para elegir tu próxima vivienda.
+            </p>
+
+            <div class="multimedia-grid">
+                <article class="multimedia-card">
+                    <div class="multimedia-card-header">
+                        <h3>Video: Objetivo, finalidad y consejos (2 a 4 min)</h3>
+                        <span class="multimedia-badge">Video HD</span>
+                    </div>
+                    <video
+                        id="multicasaPromoVideo"
+                        class="multimedia-video"
+                        controls
+                        preload="metadata"
+                        poster="{% static 'assets/photos/collage-casas.webp' %}">
+                        <source src="{% static 'assets/media/multicasa-promocional.mp4' %}" type="video/mp4">
+                        <track
+                            kind="captions"
+                            src="{% static 'assets/media/multicasa-promocional.vtt' %}"
+                            srclang="es"
+                            label="Español"
+                            default>
+                        Tu navegador no soporta la reproducción de video HTML5.
+                    </video>
+                    <ul class="multimedia-chapters">
+                        <li><strong>00:00 - Objetivo:</strong> Catálogo digital transparente y verificado de inmuebles.</li>
+                        <li><strong>00:30 - Finalidad:</strong> Búsqueda avanzada con mapa interactivo y ficha técnica en PDF.</li>
+                        <li><strong>01:15 - Promoción:</strong> Asesoría personalizada y avalúo preliminar sin costo al agendar en línea.</li>
+                        <li><strong>02:00 - Consejos:</strong> Cómo comparar ubicación, plusvalía y superficie antes de comprar.</li>
+                    </ul>
+                </article>
+
+                <article class="multimedia-card multimedia-audio-card">
+                    <div class="multimedia-card-header">
+                        <h3>Cápsula de audio: Guía rápida para compradores</h3>
+                        <span class="multimedia-badge multimedia-badge-audio">Audio</span>
+                    </div>
+                    <p class="multimedia-audio-description">
+                        Escucha nuestro resumen con recomendaciones prácticas para filtrar propiedades,
+                        descargar tu ficha técnica en PDF y agendar una visita segura con un asesor de Multicasa.
+                    </p>
+                    <audio
+                        id="multicasaPromoAudio"
+                        class="multimedia-audio"
+                        controls
+                        preload="metadata">
+                        <source src="{% static 'assets/media/multicasa-guia-audio.wav' %}" type="audio/wav">
+                        Tu navegador no soporta el elemento de audio HTML5.
+                    </audio>
+                </article>
+            </div>
+        </section>
+
         <section
             id="{% if search_performed %}resultados{% else %}propiedades{% endif %}"
             class="content-section search-results"
