@@ -66,9 +66,9 @@ class CasaSearchViewTests(TestCase):
         self.assertContains(response, 'id="heroMainCarousel"')
         self.assertContains(response, 'data-bs-ride="carousel"')
         self.assertContains(response, 'id="multicasaPromoVideo"')
-        self.assertContains(response, 'assets/media/multicasa-promocional.mp4')
+        self.assertContains(response, 'assets/multimedia/multicasa-promocional.mp4')
         self.assertContains(response, 'id="multicasaPromoAudio"')
-        self.assertContains(response, 'assets/media/multicasa-guia-audio.wav')
+        self.assertContains(response, 'assets/multimedia/multicasa-guia-audio.wav')
 
     def test_home_card_uses_only_the_principal_house_image(self):
         casa = Casa.objects.create(
