@@ -226,6 +226,56 @@
                         </article>
                     {% endfor %}
                 </div>
+
+                {% with primera_casa=casas|first %}
+                    {% if primera_casa %}
+                        <section class="search-map-panel" aria-label="Mapa de ubicación geográfica de las propiedades">
+                            <div class="property-map-heading">
+                                <div>
+                                    <h3 class="section-heading mb-1">MAPA DE UBICACIÓN GEOGRÁFICA</h3>
+                                    <p id="searchResultsMapCaption">
+                                        Mostrando ubicación de: <strong>{{ primera_casa.titulo }}</strong> ({{ primera_casa.direccion }}, {{ primera_casa.ciudad }})
+                                    </p>
+                                </div>
+                                <a
+                                    id="searchResultsMapExternalLink"
+                                    class="property-map-link"
+                                    href="https://www.google.com/maps/search/?api=1&amp;query={{ primera_casa.latitud }},{{ primera_casa.longitud }}"
+                                    target="_blank"
+                                    rel="noopener noreferrer">
+                                    Abrir en Google Maps
+                                </a>
+                            </div>
+
+                            <div class="search-map-pins" role="group" aria-label="Seleccionar propiedad en el mapa">
+                                {% for casa in casas %}
+                                    <button
+                                        type="button"
+                                        class="search-map-pin-button{% if forloop.first %} active{% endif %}"
+                                        data-lat="{{ casa.latitud }}"
+                                        data-lng="{{ casa.longitud }}"
+                                        data-title="{{ casa.titulo }}"
+                                        data-address="{{ casa.direccion }}, {{ casa.ciudad }}">
+                                        <span aria-hidden="true">📍</span>
+                                        <span>
+                                            <strong>{{ casa.titulo }}</strong>
+                                            <small>{{ casa.ciudad }} · {{ casa.zona }} ({{ casa.latitud }}, {{ casa.longitud }})</small>
+                                        </span>
+                                    </button>
+                                {% endfor %}
+                            </div>
+
+                            <iframe
+                                id="searchResultsMapIframe"
+                                class="property-map search-results-map"
+                                src="https://maps.google.com/maps?q={{ primera_casa.latitud }},{{ primera_casa.longitud }}&amp;z=15&amp;output=embed"
+                                title="Mapa de ubicación de propiedades encontradas"
+                                loading="lazy"
+                                referrerpolicy="no-referrer-when-downgrade"
+                                allowfullscreen></iframe>
+                        </section>
+                    {% endif %}
+                {% endwith %}
             {% else %}
                 <p class="search-empty">
                     {% if search_performed %}
@@ -299,4 +349,46 @@
         </div>
     </aside>
 </div>
+{% endblock %}
+
+{% block page_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const mapIframe = document.getElementById('searchResultsMapIframe');
+    const mapCaption = document.getElementById('searchResultsMapCaption');
+    const mapExternalLink = document.getElementById('searchResultsMapExternalLink');
+    const pinButtons = document.querySelectorAll('.search-map-pin-button');
+
+    if (!mapIframe || !pinButtons.length) {
+        return;
+    }
+
+    pinButtons.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const lat = btn.getAttribute('data-lat');
+            const lng = btn.getAttribute('data-lng');
+            const title = btn.getAttribute('data-title');
+            const address = btn.getAttribute('data-address');
+
+            pinButtons.forEach(function (other) {
+                other.classList.remove('active');
+            });
+            btn.classList.add('active');
+
+            mapIframe.src = 'https://maps.google.com/maps?q=' + encodeURIComponent(lat + ',' + lng) + '&z=15&output=embed';
+            if (mapExternalLink) {
+                mapExternalLink.href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(lat + ',' + lng);
+            }
+            if (mapCaption) {
+                mapCaption.textContent = '';
+                mapCaption.append('Mostrando ubicación de: ');
+                const strong = document.createElement('strong');
+                strong.textContent = title;
+                mapCaption.append(strong);
+                mapCaption.append(' (' + address + ')');
+            }
+        });
+    });
+});
+</script>
 {% endblock %}

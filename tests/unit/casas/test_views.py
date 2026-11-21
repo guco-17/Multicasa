@@ -134,6 +134,9 @@ class CasaSearchViewTests(TestCase):
 
         self.assertContains(response, 'Casa en Saltillo')
         self.assertNotContains(response, 'Casa en Monterrey')
+        self.assertContains(response, 'id="searchResultsMapIframe"')
+        self.assertContains(response, 'maps.google.com/maps?q=25.4383000,-100.9737000')
+        self.assertNotContains(response, '25.6866000')
 
 
 class CasaDetailViewTests(TestCase):

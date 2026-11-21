@@ -726,7 +726,7 @@ body {
     margin: 0;
 }
 
-.property-detail-facts > div {
+.property-detail-facts>div {
     min-width: 0;
     padding: 11px 12px;
     border-left: 2px solid #b8d7e3;
@@ -854,6 +854,66 @@ body {
     width: 100%;
     height: 270px;
     border: 1px solid #d5e3e9;
+}
+
+.search-map-panel {
+    margin-top: 18px;
+    padding: 15px;
+    border: 1px solid #d5e3e9;
+    border-top: 3px solid var(--multicasa-cyan);
+    background: #f7fafb;
+}
+
+.search-map-pins {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.search-map-pin-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 10px;
+    border: 1px solid #cbd9df;
+    border-radius: 2px;
+    background: #fff;
+    color: #303e45;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color .15s ease, background-color .15s ease;
+}
+
+.search-map-pin-button:hover,
+.search-map-pin-button:focus-visible {
+    border-color: var(--multicasa-cyan);
+    background: #eef6fa;
+}
+
+.search-map-pin-button.active {
+    border-color: var(--multicasa-blue);
+    background: #e4f1f7;
+}
+
+.search-map-pin-button strong,
+.search-map-pin-button small {
+    display: block;
+}
+
+.search-map-pin-button strong {
+    color: var(--multicasa-blue);
+    font-size: 11px;
+}
+
+.search-map-pin-button small {
+    color: #68777e;
+    font-size: 9px;
+}
+
+.search-results-map {
+    height: 290px;
 }
 
 .search-empty {
@@ -1386,7 +1446,7 @@ body {
     max-width: 650px;
 }
 
-.management-delete-panel > p {
+.management-delete-panel>p {
     margin: 18px 0;
     font-size: 12px;
     line-height: 1.6;
@@ -1545,6 +1605,7 @@ body {
 }
 
 @media print {
+
     .site-header,
     .site-footer,
     .report-actions,
