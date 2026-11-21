@@ -1,21 +1,101 @@
 {% extends 'base.html' %}
 
-{% block title %}Reporte Multicasa{% endblock %}
+{% block title %}Reporte de Casas | Administración Multicasa{% endblock %}
 
 {% block content %}
-<section class="panel">
-    <h1>Reporte resumido del inventario</h1>
-    <h2>Rangos de costo</h2>
-    <ul>
-        {% for nombre, cantidad in rangos.items %}
-            <li>{{ nombre }}: {{ cantidad }}</li>
-        {% endfor %}
-    </ul>
-    <h2>Estatus</h2>
-    <ul>
-        {% for nombre, cantidad in estatus.items %}
-            <li>{{ nombre }}: {{ cantidad }}</li>
-        {% endfor %}
-    </ul>
+<section class="panel management-panel report-panel">
+    <div class="management-heading">
+        <div>
+            <a class="management-back-link" href="{% url 'dashboard' %}">Administración</a>
+            <h1>Reporte general de casas y estatus</h1>
+            <p>Listado completo de propiedades registradas en la base de datos de Multicasa con su estatus actual.</p>
+        </div>
+        <div class="report-actions">
+            <a class="management-button management-button-secondary" href="{% url 'reportes' %}">
+                Ver dashboard gráfico
+            </a>
+            <button class="management-button management-button-primary" type="button" onclick="window.print()">
+                Imprimir / Guardar PDF
+            </button>
+        </div>
+    </div>
+
+    <div class="stats-grid report-stats-grid">
+        <div class="stat-card">
+            <h3>Total en base de datos</h3>
+            <p>{{ total_casas }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Casas en venta</h3>
+            <p>{{ estatus.en_venta }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Casas vendidas</h3>
+            <p>{{ estatus.vendida }}</p>
+        </div>
+    </div>
+
+    <form class="management-search report-filter-form" method="get" action="{% url 'reportes_exportar' %}">
+        <label for="report-estatus">Filtrar por estatus</label>
+        <select id="report-estatus" name="estatus" class="report-filter-select">
+            <option value="">Todas las casas ({{ total_casas }})</option>
+            {% for valor, etiqueta in estatus_choices %}
+                <option value="{{ valor }}" {% if estatus_filtro == valor %}selected{% endif %}>
+                    {{ etiqueta }}
+                </option>
+            {% endfor %}
+        </select>
+        <button class="management-button management-button-secondary" type="submit">Aplicar filtro</button>
+        {% if estatus_filtro %}
+            <a class="management-clear-link" href="{% url 'reportes_exportar' %}">Ver todas</a>
+        {% endif %}
+    </form>
+
+    <div class="management-table-wrap">
+        <table class="management-table report-table">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Título</th>
+                    <th scope="col">Ubicación (Ciudad / Zona)</th>
+                    <th scope="col">Dirección</th>
+                    <th scope="col">Características</th>
+                    <th scope="col">Precio (MXN)</th>
+                    <th scope="col">Estatus</th>
+                    <th scope="col">Activa</th>
+                    <th scope="col">Registro</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for casa in casas %}
+                    <tr>
+                        <td>#{{ casa.pk }}</td>
+                        <td>
+                            <strong>{{ casa.titulo }}</strong>
+                        </td>
+                        <td>{{ casa.ciudad }} · {{ casa.zona }}</td>
+                        <td>{{ casa.direccion }}</td>
+                        <td>
+                            {{ casa.recamaras }} rec. · {{ casa.banos }} baños · {{ casa.metros_construccion }} m²
+                        </td>
+                        <td><strong>${{ casa.precio }}</strong></td>
+                        <td>
+                            <span class="report-status-badge {% if casa.estatus == 'vendida' %}report-status-sold{% else %}report-status-sale{% endif %}">
+                                {{ casa.get_estatus_display }}
+                            </span>
+                        </td>
+                        <td>{{ casa.activo|yesno:"Sí,No" }}</td>
+                        <td>{{ casa.fecha_registro|date:"d/m/Y" }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td class="management-empty" colspan="9">
+                            No hay casas registradas en la base de datos{% if estatus_filtro %} con el estatus seleccionado{% endif %}.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </section>
 {% endblock %}

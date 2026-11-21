@@ -1328,6 +1328,62 @@ body {
     line-height: 1.6;
 }
 
+.report-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.report-stats-grid {
+    margin-bottom: 18px;
+}
+
+.report-filter-select {
+    min-height: 34px;
+    padding: 6px 9px;
+    border: 1px solid #cbd9df;
+    border-radius: 2px;
+    background: #fff;
+    color: #30343a;
+    font: inherit;
+    font-size: 11px;
+}
+
+.report-status-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 2px;
+    font-size: 10px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.report-status-sale {
+    background: #edf5e6;
+    color: #4b741f;
+}
+
+.report-status-sold {
+    background: #f9eee8;
+    color: #a3542f;
+}
+
+@media print {
+    .site-header,
+    .site-footer,
+    .report-actions,
+    .report-filter-form,
+    .management-back-link {
+        display: none !important;
+    }
+
+    .management-panel {
+        border: 0;
+        box-shadow: none;
+        padding: 0;
+    }
+}
+
 .footer-brand img {
     width: 29px;
     height: 30px;

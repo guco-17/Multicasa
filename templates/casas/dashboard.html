@@ -53,6 +53,20 @@
                     </span>
                 </a>
             {% endif %}
+            <a class="management-card" href="{% url 'reportes_exportar' %}">
+                <span class="management-card-icon" aria-hidden="true">▤</span>
+                <span>
+                    <strong>Reporte de casas</strong>
+                    <small>Listado completo por estatus (venta o vendida)</small>
+                </span>
+            </a>
+            <a class="management-card" href="{% url 'reportes' %}">
+                <span class="management-card-icon" aria-hidden="true">◔</span>
+                <span>
+                    <strong>Dashboard gráfico</strong>
+                    <small>Gráficas por rango de costo y estatus</small>
+                </span>
+            </a>
         </div>
     </div>
 </section>
