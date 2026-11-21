@@ -1,4 +1,7 @@
+from io import BytesIO
 import textwrap
+
+from PIL import Image, ImageOps
 from django.utils import timezone
 
 
@@ -136,20 +139,111 @@ def build_casa_ficha_pdf(casa) -> bytes:
         color=(0.45, 0.51, 0.55),
     )
 
-    content_stream = b'\n'.join(streams)
+    pages = [(b'\n'.join(streams), [])]
+    house_images = []
+    for image in casa.imagenes.order_by('-es_principal', 'pk'):
+        with image.ruta_imagen.open('rb') as image_file:
+            with Image.open(image_file) as source_image:
+                pdf_image = ImageOps.exif_transpose(source_image).convert('RGB')
+                pdf_image.thumbnail((1600, 1200), Image.Resampling.LANCZOS)
+                image_data = BytesIO()
+                pdf_image.save(image_data, format='JPEG', quality=85, optimize=True)
+                house_images.append(
+                    (image_data.getvalue(), pdf_image.width, pdf_image.height, image.es_principal)
+                )
+
+    gallery_positions = ((40, 445), (310, 445), (40, 95), (310, 95))
+    for page_start in range(0, len(house_images), len(gallery_positions)):
+        page_images = house_images[page_start:page_start + len(gallery_positions)]
+        gallery_streams = [
+            b'BT /F2 15 Tf 0.071 0.247 0.361 rg 1 0 0 1 40 790 Tm ('
+            + _pdf_escape('FOTOGRAFÍAS DE LA PROPIEDAD')
+            + b') Tj ET',
+            b'0.098 0.643 0.816 RG 1.5 w 40 778 m 572 778 l S',
+        ]
+        for slot, (image_data, image_width, image_height, is_primary) in enumerate(page_images):
+            x, y = gallery_positions[slot]
+            gallery_streams.append(f'0.835 0.890 0.914 RG 1 w {x} {y} 262 320 re S'.encode('ascii'))
+            max_width, max_height = 250, 272
+            scale = min(max_width / image_width, max_height / image_height)
+            display_width = image_width * scale
+            display_height = image_height * scale
+            image_x = x + (262 - display_width) / 2
+            image_y = y + 35 + (max_height - display_height) / 2
+            image_name = f'Im{slot + 1}'
+            gallery_streams.append(
+                f'q {display_width:.2f} 0 0 {display_height:.2f} {image_x:.2f} {image_y:.2f} cm /{image_name} Do Q'
+                .encode('ascii')
+            )
+            photo_number = page_start + slot + 1
+            caption = 'Imagen principal' if is_primary else f'Fotografía {photo_number}'
+            gallery_streams.append(
+                b'BT /F1 10 Tf 0.188 0.243 0.271 rg 1 0 0 1 '
+                + f'{x + 12} {y + 15} Tm ('.encode('ascii')
+                + _pdf_escape(caption)
+                + b') Tj ET'
+            )
+        pages.append((b'\n'.join(gallery_streams), page_images))
 
     objects = [
-        b'<< /Type /Catalog /Pages 2 0 R >>',
-        b'<< /Type /Pages /Kids [3 0 R] /Count 1 >>',
-        (
-            b'<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 842] '
-            b'/Resources << /Font << /F1 4 0 R /F2 5 0 R >> >> '
-            b'/Contents 6 0 R >>'
-        ),
+        b'',
+        b'',
         b'<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>',
         b'<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>',
-        b'<< /Length ' + str(len(content_stream)).encode('ascii') + b' >>\nstream\n' + content_stream + b'\nendstream',
     ]
+    page_references = []
+    for page_content, page_images in pages:
+        image_references = []
+        for index, (image_data, image_width, image_height, _) in enumerate(page_images, start=1):
+            image_reference = len(objects) + 1
+            image_references.append(f'/Im{index} {image_reference} 0 R')
+            objects.append(
+                b'<< /Type /XObject /Subtype /Image /Width '
+                + str(image_width).encode('ascii')
+                + b' /Height '
+                + str(image_height).encode('ascii')
+                + b' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length '
+                + str(len(image_data)).encode('ascii')
+                + b' >>\nstream\n'
+                + image_data
+                + b'\nendstream'
+            )
+
+        content_reference = len(objects) + 1
+        objects.append(
+            b'<< /Length '
+            + str(len(page_content)).encode('ascii')
+            + b' >>\nstream\n'
+            + page_content
+            + b'\nendstream'
+        )
+        page_reference = len(objects) + 1
+        page_references.append(page_reference)
+        xobject_resources = (
+            b' /XObject << '
+            + ' '.join(image_references).encode('ascii')
+            + b' >>'
+            if image_references
+            else b''
+        )
+        objects.append(
+            b'<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 842] /Resources << '
+            b'/Font << /F1 3 0 R /F2 4 0 R >>'
+            + xobject_resources
+            + b' >> /Contents '
+            + str(content_reference).encode('ascii')
+            + b' 0 R >>'
+        )
+
+    objects[0] = b'<< /Type /Catalog /Pages 2 0 R >>'
+    page_kids = ' '.join(f'{reference} 0 R' for reference in page_references)
+    objects[1] = (
+        b'<< /Type /Pages /Kids ['
+        + page_kids.encode('ascii')
+        + b'] /Count '
+        + str(len(page_references)).encode('ascii')
+        + b' >>'
+    )
 
     pdf = bytearray(b'%PDF-1.4\n%\xe2\xe3\xcf\xd3\n')
     offsets = [0]
