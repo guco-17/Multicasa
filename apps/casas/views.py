@@ -1,4 +1,7 @@
 from django.db.models import Prefetch, Q
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
+from django.views import View
 from django.views.generic import DetailView, TemplateView
 from rest_framework import permissions, viewsets
 
@@ -6,6 +9,7 @@ from apps.gestion.mixins import StaffRequiredMixin
 
 from .forms import CasaBusquedaForm
 from .models import Casa, Imagen
+from .pdf import build_casa_ficha_pdf
 from .serializers import CasaSerializer
 
 
@@ -63,6 +67,15 @@ class CasaDetailView(DetailView):
                 queryset=Imagen.objects.order_by('-es_principal', 'pk'),
             )
         )
+
+
+class CasaFichaPDFView(View):
+    def get(self, request, pk):
+        casa = get_object_or_404(Casa, pk=pk, activo=True)
+        pdf_bytes = build_casa_ficha_pdf(casa)
+        response = HttpResponse(pdf_bytes, content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename="ficha-casa-{casa.pk}.pdf"'
+        return response
 
 
 class DashboardView(StaffRequiredMixin, TemplateView):

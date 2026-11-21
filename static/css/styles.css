@@ -731,6 +731,29 @@ body {
     color: #fff;
 }
 
+.property-pdf-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    margin-top: 10px;
+    padding: 8px 13px;
+    border: 1px solid var(--multicasa-blue);
+    border-radius: 2px;
+    background: #fff;
+    color: var(--multicasa-blue);
+    font-size: 12px;
+    font-weight: 700;
+    text-align: center;
+    text-decoration: none;
+}
+
+.property-pdf-button:hover,
+.property-pdf-button:focus-visible {
+    background: #eef6fa;
+    color: var(--multicasa-blue-dark);
+}
+
 .property-map-card {
     padding: 17px;
 }
