@@ -1,27 +1,168 @@
 {% extends 'base.html' %}
 
-{% block title %}Reportes | Multicasa{% endblock %}
+{% block title %}Dashboard de Gráficas | Administración Multicasa{% endblock %}
 
 {% block content %}
-<section class="panel">
-    <h1>Reportes y dashboard</h1>
-    <div class="chart-grid">
-        <div class="chart-card">
-            <h2>Casas por rango de costo</h2>
-            <ul>
-                {% for nombre, cantidad in rangos.items %}
-                    <li>{{ nombre }}: {{ cantidad }}</li>
-                {% endfor %}
-            </ul>
+<section class="panel management-panel report-panel">
+    <div class="management-heading">
+        <div>
+            <a class="management-back-link" href="{% url 'dashboard' %}">Administración</a>
+            <h1>Dashboard de estadísticas e inventario</h1>
+            <p>Análisis gráfico de propiedades por rango de costo y comparativa de casas en venta vs. vendidas.</p>
         </div>
-        <div class="chart-card">
-            <h2>Estatus</h2>
-            <ul>
-                {% for nombre, cantidad in estatus.items %}
-                    <li>{{ nombre }}: {{ cantidad }}</li>
-                {% endfor %}
-            </ul>
+        <div class="report-actions">
+            <a class="management-button management-button-secondary" href="{% url 'reportes_exportar' %}">
+                Ver reporte listado
+            </a>
+            <button class="management-button management-button-primary" type="button" onclick="window.print()">
+                Imprimir dashboard
+            </button>
         </div>
     </div>
+
+    <div class="stats-grid report-stats-grid">
+        <div class="stat-card">
+            <h3>Total de casas</h3>
+            <p>{{ total_casas }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>En venta</h3>
+            <p>{{ estatus.en_venta }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Vendidas</h3>
+            <p>{{ estatus.vendida }}</p>
+        </div>
+    </div>
+
+    <div class="dashboard-charts-grid">
+        <article class="dashboard-chart-card">
+            <div class="dashboard-chart-header">
+                <h2>Casas por rango de costo</h2>
+                <p>Distribución del inventario según su nivel de precio en MXN.</p>
+            </div>
+            <div class="dashboard-canvas-wrap">
+                <canvas id="chartRangosCosto" aria-label="Gráfica de cantidad de casas por rango de costo" role="img"></canvas>
+            </div>
+            <ul class="dashboard-metric-list">
+                {% for item in rangos_detalle %}
+                    <li class="dashboard-metric-item">
+                        <div class="dashboard-metric-heading">
+                            <span>
+                                <strong>{{ item.nombre }}</strong>
+                                <small>{{ item.descripcion }}</small>
+                            </span>
+                            <span class="dashboard-metric-value">{{ item.cantidad }} ({{ item.porcentaje }}%)</span>
+                        </div>
+                        <div class="dashboard-bar-track" aria-hidden="true">
+                            <div class="dashboard-bar-fill dashboard-bar-range-{{ forloop.counter }}" style="width: {{ item.porcentaje|stringformat:'s' }}%;"></div>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </article>
+
+        <article class="dashboard-chart-card">
+            <div class="dashboard-chart-header">
+                <h2>Casas en venta vs. vendidas</h2>
+                <p>Proporción actual de propiedades disponibles frente a operaciones cerradas.</p>
+            </div>
+            <div class="dashboard-canvas-wrap">
+                <canvas id="chartEstatusCasas" aria-label="Gráfica de casas vendidas y en venta" role="img"></canvas>
+            </div>
+            <ul class="dashboard-metric-list">
+                {% for item in estatus_detalle %}
+                    <li class="dashboard-metric-item">
+                        <div class="dashboard-metric-heading">
+                            <span>
+                                <strong>{{ item.nombre }}</strong>
+                                <small>Estatus comercial: {{ item.clave }}</small>
+                            </span>
+                            <span class="dashboard-metric-value">{{ item.cantidad }} ({{ item.porcentaje }}%)</span>
+                        </div>
+                        <div class="dashboard-bar-track" aria-hidden="true">
+                            <div class="dashboard-bar-fill dashboard-bar-status-{{ item.clave }}" style="width: {{ item.porcentaje|stringformat:'s' }}%;"></div>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </article>
+    </div>
 </section>
+
+{{ chart_rangos|json_script:"chart-rangos-data" }}
+{{ chart_estatus|json_script:"chart-estatus-data" }}
+{% endblock %}
+
+{% block page_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js" crossorigin="anonymous"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    if (typeof window.Chart === 'undefined') {
+        return;
+    }
+    const rangosEl = document.getElementById('chart-rangos-data');
+    const estatusEl = document.getElementById('chart-estatus-data');
+    if (!rangosEl || !estatusEl) {
+        return;
+    }
+    const rangosData = JSON.parse(rangosEl.textContent);
+    const estatusData = JSON.parse(estatusEl.textContent);
+
+    const ctxRangos = document.getElementById('chartRangosCosto');
+    if (ctxRangos) {
+        new Chart(ctxRangos, {
+            type: 'bar',
+            data: {
+                labels: rangosData.labels,
+                datasets: [{
+                    label: 'Cantidad de casas',
+                    data: rangosData.values,
+                    backgroundColor: ['#19a4d0', '#123f5c', '#5b8c2a'],
+                    borderColor: ['#0879a7', '#0c2c40', '#446b1e'],
+                    borderWidth: 1,
+                    borderRadius: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { precision: 0 }
+                    }
+                }
+            }
+        });
+    }
+
+    const ctxEstatus = document.getElementById('chartEstatusCasas');
+    if (ctxEstatus) {
+        new Chart(ctxEstatus, {
+            type: 'doughnut',
+            data: {
+                labels: estatusData.labels,
+                datasets: [{
+                    label: 'Casas',
+                    data: estatusData.values,
+                    backgroundColor: ['#5b8c2a', '#d97338'],
+                    borderColor: ['#ffffff', '#ffffff'],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+    }
+});
+</script>
 {% endblock %}

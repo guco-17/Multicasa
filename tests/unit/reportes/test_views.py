@@ -90,3 +90,36 @@ class ReporteCasasViewTests(TestCase):
         self.assertContains(response_vendida, 'Casa Colonial Centro')
         self.assertNotContains(response_vendida, 'Casa Residencial Norte')
 
+    def test_dashboard_report_renders_cost_range_and_status_charts(self):
+        Casa.objects.create(
+            titulo='Mansión Campestre',
+            descripcion='Casa residencial de lujo',
+            precio=Decimal('3500000.00'),
+            direccion='Blvd. LosValdez 500',
+            ciudad='Saltillo',
+            zona='Norte',
+            latitud=Decimal('25.4600000'),
+            longitud=Decimal('-100.9700000'),
+            recamaras=5,
+            banos=Decimal('4.5'),
+            metros_construccion=Decimal('420.00'),
+            metros_terreno=Decimal('600.00'),
+            estatus='en_venta',
+            activo=True,
+        )
+        self.client.force_login(self.staff_user)
+
+        for url_name in ('reportes', 'dashboard'):
+            with self.subTest(url_name=url_name):
+                response = self.client.get(reverse(url_name))
+                self.assertEqual(response.status_code, 200)
+                self.assertContains(response, 'chartRangosCosto')
+                self.assertContains(response, 'chartEstatusCasas')
+                self.assertContains(response, 'Casas por rango de costo')
+                self.assertContains(response, 'Casas en venta vs. vendidas')
+                self.assertEqual(response.context['rangos']['Económica'], 1)
+                self.assertEqual(response.context['rangos']['Media'], 1)
+                self.assertEqual(response.context['rangos']['Residencial'], 1)
+                self.assertEqual(response.context['estatus']['en_venta'], 2)
+                self.assertEqual(response.context['estatus']['vendida'], 1)
+

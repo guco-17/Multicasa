@@ -11,8 +11,7 @@ class DashboardReportView(StaffRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['rangos'] = dict(ReporteService.obtener_rangos_precios()[0])
-        context['estatus'] = ReporteService.obtener_estatus()
+        context.update(ReporteService.obtener_datos_dashboard())
         return context
 
 
