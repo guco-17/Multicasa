@@ -6,24 +6,117 @@
 {% block content %}
 <div class="row g-0 hero-row">
     <div class="col-lg-9">
-        <picture class="hero-picture">
-            <source
-                type="image/avif"
-                srcset="{% static 'assets/photos/hero-casa-exterior-480.avif' %} 480w, {% static 'assets/photos/hero-casa-exterior-771.avif' %} 771w"
-                sizes="(max-width: 800px) 100vw, 771px">
-            <source
-                type="image/webp"
-                srcset="{% static 'assets/photos/hero-casa-exterior-480.webp' %} 480w, {% static 'assets/photos/hero-casa-exterior-771.webp' %} 771w"
-                sizes="(max-width: 800px) 100vw, 771px">
-            <img
-                src="{% static 'assets/photos/hero-casa-exterior-771.jpg' %}"
-                srcset="{% static 'assets/photos/hero-casa-exterior-480.jpg' %} 480w, {% static 'assets/photos/hero-casa-exterior-771.jpg' %} 771w"
-                sizes="(max-width: 800px) 100vw, 771px"
-                width="771"
-                height="255"
-                alt="Casa con jardín y fachada de estilo mediterráneo"
-                fetchpriority="high">
-        </picture>
+        <div
+            id="heroMainCarousel"
+            class="carousel slide hero-carousel"
+            data-bs-ride="carousel"
+            data-bs-interval="4500"
+            data-bs-pause="hover"
+            aria-label="Galería destacada de Bienes Raíces Multicasa">
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#heroMainCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Propiedad destacada 1"></button>
+                <button type="button" data-bs-target="#heroMainCarousel" data-bs-slide-to="1" aria-label="Propiedad destacada 2"></button>
+                <button type="button" data-bs-target="#heroMainCarousel" data-bs-slide-to="2" aria-label="Propiedad destacada 3"></button>
+                <button type="button" data-bs-target="#heroMainCarousel" data-bs-slide-to="3" aria-label="Propiedad destacada 4"></button>
+            </div>
+
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <picture class="hero-picture">
+                        <source
+                            type="image/avif"
+                            srcset="{% static 'assets/photos/hero-casa-exterior-480.avif' %} 480w, {% static 'assets/photos/hero-casa-exterior-771.avif' %} 771w"
+                            sizes="(max-width: 800px) 100vw, 771px">
+                        <source
+                            type="image/webp"
+                            srcset="{% static 'assets/photos/hero-casa-exterior-480.webp' %} 480w, {% static 'assets/photos/hero-casa-exterior-771.webp' %} 771w"
+                            sizes="(max-width: 800px) 100vw, 771px">
+                        <img
+                            src="{% static 'assets/photos/hero-casa-exterior-771.jpg' %}"
+                            srcset="{% static 'assets/photos/hero-casa-exterior-480.jpg' %} 480w, {% static 'assets/photos/hero-casa-exterior-771.jpg' %} 771w"
+                            sizes="(max-width: 800px) 100vw, 771px"
+                            width="771"
+                            height="255"
+                            alt="Casa con jardín y fachada de estilo mediterráneo"
+                            fetchpriority="high">
+                    </picture>
+                    <div class="carousel-caption hero-carousel-caption">
+                        <strong>Residencias verificadas en las mejores zonas</strong>
+                        <span>Asesoría integral de compra y venta con respaldo Multicasa</span>
+                    </div>
+                </div>
+
+                <div class="carousel-item">
+                    <picture class="hero-picture">
+                        <source type="image/avif" srcset="{% static 'assets/photos/casa-1.avif' %}">
+                        <source type="image/webp" srcset="{% static 'assets/photos/casa-1.webp' %}">
+                        <img
+                            src="{% static 'assets/photos/casa-1.png' %}"
+                            width="771"
+                            height="255"
+                            alt="Vivienda familiar con acabados contemporáneos"
+                            loading="lazy">
+                    </picture>
+                    <div class="carousel-caption hero-carousel-caption">
+                        <strong>Opciones residenciales para tu familia</strong>
+                        <span>Filtra por ciudad, rango de precio, recámaras y baños</span>
+                    </div>
+                </div>
+
+                <div class="carousel-item">
+                    <picture class="hero-picture">
+                        <source type="image/avif" srcset="{% static 'assets/photos/casa-2.avif' %}">
+                        <source type="image/webp" srcset="{% static 'assets/photos/casa-2.webp' %}">
+                        <img
+                            src="{% static 'assets/photos/casa-2.png' %}"
+                            width="771"
+                            height="255"
+                            alt="Propiedad residencial con amplias áreas verdes"
+                            loading="lazy">
+                    </picture>
+                    <div class="carousel-caption hero-carousel-caption">
+                        <strong>Ubicación estratégica y plusvalía garantizada</strong>
+                        <span>Consulta mapas interactivos y descarga la ficha técnica en PDF</span>
+                    </div>
+                </div>
+
+                <div class="carousel-item">
+                    <picture class="hero-picture">
+                        <source type="image/avif" srcset="{% static 'assets/photos/casa-3.avif' %}">
+                        <source type="image/webp" srcset="{% static 'assets/photos/casa-3.webp' %}">
+                        <img
+                            src="{% static 'assets/photos/casa-3.png' %}"
+                            width="771"
+                            height="255"
+                            alt="Residencia moderna lista para habitar"
+                            loading="lazy">
+                    </picture>
+                    <div class="carousel-caption hero-carousel-caption">
+                        <strong>Agenda una visita con nuestros asesores</strong>
+                        <span>Atención personalizada hasta la firma de tu propiedad</span>
+                    </div>
+                </div>
+            </div>
+
+            <button
+                class="carousel-control-prev"
+                type="button"
+                data-bs-target="#heroMainCarousel"
+                data-bs-slide="prev"
+                aria-label="Anterior imagen destacada">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Anterior</span>
+            </button>
+            <button
+                class="carousel-control-next"
+                type="button"
+                data-bs-target="#heroMainCarousel"
+                data-bs-slide="next"
+                aria-label="Siguiente imagen destacada">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Siguiente</span>
+            </button>
+        </div>
     </div>
     <aside class="col-lg-3 quick-menu" aria-label="Servicios inmobiliarios">
         <a href="#buscador">Compra</a>
@@ -74,6 +167,63 @@
                 de contacto.
             </p>
             <a class="more-link" href="{% url 'contacto' %}">Contáctanos para más información <span aria-hidden="true">»</span></a>
+        </section>
+
+        <section id="multimedia" class="content-section multimedia-section" aria-label="Contenido multimedia de Multicasa">
+            <h2 class="section-heading">CONOCE MULTICASA: VIDEO PROMOCIONAL Y AUDIO</h2>
+            <p>
+                Descubre el objetivo y la finalidad de nuestra plataforma inmobiliaria, conoce nuestras
+                promociones vigentes y escucha los consejos clave para elegir tu próxima vivienda.
+            </p>
+
+            <div class="multimedia-grid">
+                <article class="multimedia-card">
+                    <div class="multimedia-card-header">
+                        <h3>Video: Objetivo, finalidad y consejos (2 a 4 min)</h3>
+                        <span class="multimedia-badge">Video HD</span>
+                    </div>
+                    <video
+                        id="multicasaPromoVideo"
+                        class="multimedia-video"
+                        controls
+                        preload="metadata"
+                        poster="{% static 'assets/photos/collage-casas.webp' %}">
+                        <source src="{% static 'assets/multimedia/multicasa-promocional.mp4' %}" type="video/mp4">
+                        <track
+                            kind="captions"
+                            src="{% static 'assets/multimedia/multicasa-promocional.vtt' %}"
+                            srclang="es"
+                            label="Español"
+                            default>
+                        Tu navegador no soporta la reproducción de video HTML5.
+                    </video>
+                    <ul class="multimedia-chapters">
+                        <li><strong>00:00 - Objetivo:</strong> Catálogo digital transparente y verificado de inmuebles.</li>
+                        <li><strong>00:30 - Finalidad:</strong> Búsqueda avanzada con mapa interactivo y ficha técnica en PDF.</li>
+                        <li><strong>01:15 - Promoción:</strong> Asesoría personalizada y avalúo preliminar sin costo al agendar en línea.</li>
+                        <li><strong>02:00 - Consejos:</strong> Cómo comparar ubicación, plusvalía y superficie antes de comprar.</li>
+                    </ul>
+                </article>
+
+                <article class="multimedia-card multimedia-audio-card">
+                    <div class="multimedia-card-header">
+                        <h3>Cápsula de audio: Guía rápida para compradores</h3>
+                        <span class="multimedia-badge multimedia-badge-audio">Audio</span>
+                    </div>
+                    <p class="multimedia-audio-description">
+                        Escucha nuestro resumen con recomendaciones prácticas para filtrar propiedades,
+                        descargar tu ficha técnica en PDF y agendar una visita segura con un asesor de Multicasa.
+                    </p>
+                    <audio
+                        id="multicasaPromoAudio"
+                        class="multimedia-audio"
+                        controls
+                        preload="metadata">
+                        <source src="{% static 'assets/multimedia/multicasa-guia-audio.wav' %}" type="audio/wav">
+                        Tu navegador no soporta el elemento de audio HTML5.
+                    </audio>
+                </article>
+            </div>
         </section>
 
         <section
@@ -133,6 +283,56 @@
                         </article>
                     {% endfor %}
                 </div>
+
+                {% with primera_casa=casas|first %}
+                    {% if primera_casa %}
+                        <section class="search-map-panel" aria-label="Mapa de ubicación geográfica de las propiedades">
+                            <div class="property-map-heading">
+                                <div>
+                                    <h3 class="section-heading mb-1">MAPA DE UBICACIÓN GEOGRÁFICA</h3>
+                                    <p id="searchResultsMapCaption">
+                                        Mostrando ubicación de: <strong>{{ primera_casa.titulo }}</strong> ({{ primera_casa.direccion }}, {{ primera_casa.ciudad }})
+                                    </p>
+                                </div>
+                                <a
+                                    id="searchResultsMapExternalLink"
+                                    class="property-map-link"
+                                    href="https://www.google.com/maps/search/?api=1&amp;query={{ primera_casa.latitud }},{{ primera_casa.longitud }}"
+                                    target="_blank"
+                                    rel="noopener noreferrer">
+                                    Abrir en Google Maps
+                                </a>
+                            </div>
+
+                            <div class="search-map-pins" role="group" aria-label="Seleccionar propiedad en el mapa">
+                                {% for casa in casas %}
+                                    <button
+                                        type="button"
+                                        class="search-map-pin-button{% if forloop.first %} active{% endif %}"
+                                        data-lat="{{ casa.latitud }}"
+                                        data-lng="{{ casa.longitud }}"
+                                        data-title="{{ casa.titulo }}"
+                                        data-address="{{ casa.direccion }}, {{ casa.ciudad }}">
+                                        <span aria-hidden="true">📍</span>
+                                        <span>
+                                            <strong>{{ casa.titulo }}</strong>
+                                            <small>{{ casa.ciudad }} · {{ casa.zona }} ({{ casa.latitud }}, {{ casa.longitud }})</small>
+                                        </span>
+                                    </button>
+                                {% endfor %}
+                            </div>
+
+                            <iframe
+                                id="searchResultsMapIframe"
+                                class="property-map search-results-map"
+                                src="https://maps.google.com/maps?q={{ primera_casa.latitud }},{{ primera_casa.longitud }}&amp;z=15&amp;output=embed"
+                                title="Mapa de ubicación de propiedades encontradas"
+                                loading="lazy"
+                                referrerpolicy="no-referrer-when-downgrade"
+                                allowfullscreen></iframe>
+                        </section>
+                    {% endif %}
+                {% endwith %}
             {% else %}
                 <p class="search-empty">
                     {% if search_performed %}
@@ -206,4 +406,46 @@
         </div>
     </aside>
 </div>
+{% endblock %}
+
+{% block page_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const mapIframe = document.getElementById('searchResultsMapIframe');
+    const mapCaption = document.getElementById('searchResultsMapCaption');
+    const mapExternalLink = document.getElementById('searchResultsMapExternalLink');
+    const pinButtons = document.querySelectorAll('.search-map-pin-button');
+
+    if (!mapIframe || !pinButtons.length) {
+        return;
+    }
+
+    pinButtons.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const lat = btn.getAttribute('data-lat');
+            const lng = btn.getAttribute('data-lng');
+            const title = btn.getAttribute('data-title');
+            const address = btn.getAttribute('data-address');
+
+            pinButtons.forEach(function (other) {
+                other.classList.remove('active');
+            });
+            btn.classList.add('active');
+
+            mapIframe.src = 'https://maps.google.com/maps?q=' + encodeURIComponent(lat + ',' + lng) + '&z=15&output=embed';
+            if (mapExternalLink) {
+                mapExternalLink.href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(lat + ',' + lng);
+            }
+            if (mapCaption) {
+                mapCaption.textContent = '';
+                mapCaption.append('Mostrando ubicación de: ');
+                const strong = document.createElement('strong');
+                strong.textContent = title;
+                mapCaption.append(strong);
+                mapCaption.append(' (' + address + ')');
+            }
+        });
+    });
+});
+</script>
 {% endblock %}

@@ -63,6 +63,12 @@ class CasaSearchViewTests(TestCase):
         self.assertNotContains(response, 'Casa vendida')
         self.assertNotContains(response, 'Casa desactivada')
         self.assertContains(response, 'Imagen no disponible')
+        self.assertContains(response, 'id="heroMainCarousel"')
+        self.assertContains(response, 'data-bs-ride="carousel"')
+        self.assertContains(response, 'id="multicasaPromoVideo"')
+        self.assertContains(response, 'assets/multimedia/multicasa-promocional.mp4')
+        self.assertContains(response, 'id="multicasaPromoAudio"')
+        self.assertContains(response, 'assets/multimedia/multicasa-guia-audio.wav')
 
     def test_home_card_uses_only_the_principal_house_image(self):
         casa = Casa.objects.create(
@@ -132,6 +138,9 @@ class CasaSearchViewTests(TestCase):
 
         self.assertContains(response, 'Casa en Saltillo')
         self.assertNotContains(response, 'Casa en Monterrey')
+        self.assertContains(response, 'id="searchResultsMapIframe"')
+        self.assertContains(response, 'maps.google.com/maps?q=25.4383000,-100.9737000')
+        self.assertNotContains(response, '25.6866000')
 
 
 class CasaDetailViewTests(TestCase):
