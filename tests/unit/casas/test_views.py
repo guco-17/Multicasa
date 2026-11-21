@@ -1,7 +1,12 @@
 from decimal import Decimal
+from io import BytesIO
+import tempfile
 
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
+from django.test import override_settings
 from django.urls import reverse
+from PIL import Image as PillowImage
 
 from apps.casas.models import Casa, Imagen
 
@@ -68,7 +73,7 @@ class CasaSearchViewTests(TestCase):
         self.assertContains(response, 'id="multicasaPromoVideo"')
         self.assertContains(response, 'assets/multimedia/multicasa-promocional.mp4')
         self.assertContains(response, 'id="multicasaPromoAudio"')
-        self.assertContains(response, 'assets/multimedia/multicasa-guia-audio.wav')
+        self.assertContains(response, 'assets/multimedia/multicasa-guia-audio.mp3')
 
     def test_home_card_uses_only_the_principal_house_image(self):
         casa = Casa.objects.create(
@@ -259,6 +264,35 @@ class CasaDetailViewTests(TestCase):
         ):
             with self.subTest(expected=expected):
                 self.assertIn(expected, decoded_pdf)
+
+    def test_ficha_pdf_includes_house_images_in_a_gallery_page(self):
+        image_bytes = BytesIO()
+        PillowImage.new('RGB', (20, 10), color='blue').save(image_bytes, format='PNG')
+        image_upload = SimpleUploadedFile(
+            'fachada.png',
+            image_bytes.getvalue(),
+            content_type='image/png',
+        )
+
+        with tempfile.TemporaryDirectory() as media_root, override_settings(MEDIA_ROOT=media_root):
+            casa = self.crear_casa()
+            Imagen.objects.create(casa=casa, ruta_imagen=image_upload, es_principal=True)
+            Imagen.objects.create(
+                casa=casa,
+                ruta_imagen=SimpleUploadedFile(
+                    'sala.png',
+                    image_bytes.getvalue(),
+                    content_type='image/png',
+                ),
+            )
+
+            response = self.client.get(reverse('casa_ficha_pdf', args=[casa.pk]))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content.count(b'/Subtype /Image'), 2)
+        self.assertIn(b'/Count 2', response.content)
+        self.assertIn(b'/Im1 Do', response.content)
+        self.assertIn(b'/Im2 Do', response.content)
 
     def test_inactive_house_ficha_pdf_returns_404(self):
         casa = self.crear_casa(activo=False)
