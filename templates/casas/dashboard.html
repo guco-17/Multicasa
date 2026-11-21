@@ -20,6 +20,60 @@
         </div>
     </div>
 
+    <div class="dashboard-charts-grid management-section">
+        <article class="dashboard-chart-card">
+            <div class="dashboard-chart-header">
+                <h2>Casas por rango de costo</h2>
+                <p>Cantidad de viviendas por categoría de precio.</p>
+            </div>
+            <div class="dashboard-canvas-wrap">
+                <canvas id="chartRangosCosto" aria-label="Gráfica de cantidad de casas por rango de costo" role="img"></canvas>
+            </div>
+            <ul class="dashboard-metric-list">
+                {% for item in rangos_detalle %}
+                    <li class="dashboard-metric-item">
+                        <div class="dashboard-metric-heading">
+                            <span>
+                                <strong>{{ item.nombre }}</strong>
+                                <small>{{ item.descripcion }}</small>
+                            </span>
+                            <span class="dashboard-metric-value">{{ item.cantidad }} ({{ item.porcentaje }}%)</span>
+                        </div>
+                        <div class="dashboard-bar-track" aria-hidden="true">
+                            <div class="dashboard-bar-fill dashboard-bar-range-{{ forloop.counter }}" style="width: {{ item.porcentaje|stringformat:'s' }}%;"></div>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </article>
+
+        <article class="dashboard-chart-card">
+            <div class="dashboard-chart-header">
+                <h2>Casas en venta vs. vendidas</h2>
+                <p>Comparativa por estatus comercial en la base de datos.</p>
+            </div>
+            <div class="dashboard-canvas-wrap">
+                <canvas id="chartEstatusCasas" aria-label="Gráfica de casas vendidas y en venta" role="img"></canvas>
+            </div>
+            <ul class="dashboard-metric-list">
+                {% for item in estatus_detalle %}
+                    <li class="dashboard-metric-item">
+                        <div class="dashboard-metric-heading">
+                            <span>
+                                <strong>{{ item.nombre }}</strong>
+                                <small>Estatus comercial: {{ item.clave }}</small>
+                            </span>
+                            <span class="dashboard-metric-value">{{ item.cantidad }} ({{ item.porcentaje }}%)</span>
+                        </div>
+                        <div class="dashboard-bar-track" aria-hidden="true">
+                            <div class="dashboard-bar-fill dashboard-bar-status-{{ item.clave }}" style="width: {{ item.porcentaje|stringformat:'s' }}%;"></div>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </article>
+    </div>
+
     <div class="management-section">
         <div class="management-section-heading">
             <h2>Gestión del catálogo</h2>
@@ -53,7 +107,88 @@
                     </span>
                 </a>
             {% endif %}
+            <a class="management-card" href="{% url 'reportes_exportar' %}">
+                <span class="management-card-icon" aria-hidden="true">▤</span>
+                <span>
+                    <strong>Reporte de casas</strong>
+                    <small>Listado completo por estatus (venta o vendida)</small>
+                </span>
+            </a>
+            <a class="management-card" href="{% url 'reportes' %}">
+                <span class="management-card-icon" aria-hidden="true">◔</span>
+                <span>
+                    <strong>Dashboard gráfico</strong>
+                    <small>Gráficas por rango de costo y estatus</small>
+                </span>
+            </a>
         </div>
     </div>
 </section>
+
+{{ chart_rangos|json_script:"chart-rangos-data" }}
+{{ chart_estatus|json_script:"chart-estatus-data" }}
+{% endblock %}
+
+{% block page_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js" crossorigin="anonymous"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    if (typeof window.Chart === 'undefined') {
+        return;
+    }
+    const rangosEl = document.getElementById('chart-rangos-data');
+    const estatusEl = document.getElementById('chart-estatus-data');
+    if (!rangosEl || !estatusEl) {
+        return;
+    }
+    const rangosData = JSON.parse(rangosEl.textContent);
+    const estatusData = JSON.parse(estatusEl.textContent);
+
+    const ctxRangos = document.getElementById('chartRangosCosto');
+    if (ctxRangos) {
+        new Chart(ctxRangos, {
+            type: 'bar',
+            data: {
+                labels: rangosData.labels,
+                datasets: [{
+                    label: 'Cantidad de casas',
+                    data: rangosData.values,
+                    backgroundColor: ['#19a4d0', '#123f5c', '#5b8c2a'],
+                    borderColor: ['#0879a7', '#0c2c40', '#446b1e'],
+                    borderWidth: 1,
+                    borderRadius: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+            }
+        });
+    }
+
+    const ctxEstatus = document.getElementById('chartEstatusCasas');
+    if (ctxEstatus) {
+        new Chart(ctxEstatus, {
+            type: 'doughnut',
+            data: {
+                labels: estatusData.labels,
+                datasets: [{
+                    label: 'Casas',
+                    data: estatusData.values,
+                    backgroundColor: ['#5b8c2a', '#d97338'],
+                    borderColor: ['#ffffff', '#ffffff'],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { position: 'bottom' } }
+            }
+        });
+    }
+});
+</script>
 {% endblock %}

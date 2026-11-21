@@ -731,6 +731,29 @@ body {
     color: #fff;
 }
 
+.property-pdf-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    margin-top: 10px;
+    padding: 8px 13px;
+    border: 1px solid var(--multicasa-blue);
+    border-radius: 2px;
+    background: #fff;
+    color: var(--multicasa-blue);
+    font-size: 12px;
+    font-weight: 700;
+    text-align: center;
+    text-decoration: none;
+}
+
+.property-pdf-button:hover,
+.property-pdf-button:focus-visible {
+    background: #eef6fa;
+    color: var(--multicasa-blue-dark);
+}
+
 .property-map-card {
     padding: 17px;
 }
@@ -1303,6 +1326,174 @@ body {
     margin: 18px 0;
     font-size: 12px;
     line-height: 1.6;
+}
+
+.report-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.report-stats-grid {
+    margin-bottom: 18px;
+}
+
+.report-filter-select {
+    min-height: 34px;
+    padding: 6px 9px;
+    border: 1px solid #cbd9df;
+    border-radius: 2px;
+    background: #fff;
+    color: #30343a;
+    font: inherit;
+    font-size: 11px;
+}
+
+.report-status-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 2px;
+    font-size: 10px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.report-status-sale {
+    background: #edf5e6;
+    color: #4b741f;
+}
+
+.report-status-sold {
+    background: #f9eee8;
+    color: #a3542f;
+}
+
+.dashboard-charts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+    gap: 16px;
+}
+
+.dashboard-chart-card {
+    padding: 18px;
+    border: 1px solid #d5e3e9;
+    border-top: 3px solid var(--multicasa-blue);
+    background: #fff;
+}
+
+.dashboard-chart-header {
+    margin-bottom: 14px;
+}
+
+.dashboard-chart-header h2 {
+    margin: 0 0 4px;
+    color: var(--multicasa-blue);
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.dashboard-chart-header p {
+    margin: 0;
+    color: #68777e;
+    font-size: 11px;
+}
+
+.dashboard-canvas-wrap {
+    position: relative;
+    height: 220px;
+    margin-bottom: 16px;
+    padding: 8px;
+    border: 1px solid #e6eff3;
+    background: #fafcfd;
+}
+
+.dashboard-metric-list {
+    display: grid;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.dashboard-metric-item {
+    padding: 8px 10px;
+    border: 1px solid #e6eff3;
+    background: #f7fafb;
+}
+
+.dashboard-metric-heading {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 6px;
+}
+
+.dashboard-metric-heading strong {
+    color: var(--multicasa-blue);
+    font-size: 11px;
+}
+
+.dashboard-metric-heading small {
+    display: block;
+    color: #68777e;
+    font-size: 10px;
+}
+
+.dashboard-metric-value {
+    color: #303e45;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.dashboard-bar-track {
+    overflow: hidden;
+    height: 8px;
+    border-radius: 2px;
+    background: #e1ecef;
+}
+
+.dashboard-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: var(--multicasa-cyan);
+}
+
+.dashboard-bar-range-1 {
+    background: #19a4d0;
+}
+
+.dashboard-bar-range-2 {
+    background: #123f5c;
+}
+
+.dashboard-bar-range-3 {
+    background: #5b8c2a;
+}
+
+.dashboard-bar-status-en_venta {
+    background: #5b8c2a;
+}
+
+.dashboard-bar-status-vendida {
+    background: #d97338;
+}
+
+@media print {
+    .site-header,
+    .site-footer,
+    .report-actions,
+    .report-filter-form,
+    .management-back-link {
+        display: none !important;
+    }
+
+    .management-panel {
+        border: 0;
+        box-shadow: none;
+        padding: 0;
+    }
 }
 
 .footer-brand img {

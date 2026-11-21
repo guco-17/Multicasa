@@ -201,6 +201,7 @@ class CasaDetailViewTests(TestCase):
         )
         self.assertContains(response, 'maps.google.com/maps?q=25.4383000,-100.9737000')
         self.assertContains(response, f'/contacto/?casa={casa.pk}')
+        self.assertContains(response, reverse('casa_ficha_pdf', args=[casa.pk]))
 
     def test_inactive_house_detail_is_not_public(self):
         casa = self.crear_casa(activo=False)
@@ -222,3 +223,37 @@ class CasaDetailViewTests(TestCase):
         self.assertContains(response, '/media/casas/unica.jpg')
         self.assertNotContains(response, 'data-bs-slide="prev"')
         self.assertNotContains(response, 'data-bs-slide="next"')
+
+    def test_ficha_pdf_downloads_valid_pdf_with_house_details(self):
+        casa = self.crear_casa()
+
+        response = self.client.get(reverse('casa_ficha_pdf', args=[casa.pk]))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response['Content-Type'], 'application/pdf')
+        self.assertEqual(
+            response['Content-Disposition'],
+            f'attachment; filename="ficha-casa-{casa.pk}.pdf"',
+        )
+        self.assertTrue(response.content.startswith(b'%PDF-1.4'))
+        decoded_pdf = response.content.decode('cp1252', errors='ignore')
+        for expected in (
+            'BIENES RAÍCES MULTICASA',
+            'Casa de detalle',
+            'Calle de prueba 123',
+            'Saltillo',
+            'Centro',
+            '1,850,000.00',
+            '180.00 m2',
+            '220.00 m2',
+            'En venta',
+        ):
+            with self.subTest(expected=expected):
+                self.assertIn(expected, decoded_pdf)
+
+    def test_inactive_house_ficha_pdf_returns_404(self):
+        casa = self.crear_casa(activo=False)
+
+        response = self.client.get(reverse('casa_ficha_pdf', args=[casa.pk]))
+
+        self.assertEqual(response.status_code, 404)

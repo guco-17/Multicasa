@@ -1,11 +1,16 @@
 from django.db.models import Prefetch, Q
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
+from django.views import View
 from django.views.generic import DetailView, TemplateView
 from rest_framework import permissions, viewsets
 
 from apps.gestion.mixins import StaffRequiredMixin
+from apps.reportes.services import ReporteService
 
 from .forms import CasaBusquedaForm
 from .models import Casa, Imagen
+from .pdf import build_casa_ficha_pdf
 from .serializers import CasaSerializer
 
 
@@ -65,15 +70,24 @@ class CasaDetailView(DetailView):
         )
 
 
+class CasaFichaPDFView(View):
+    def get(self, request, pk):
+        casa = get_object_or_404(Casa, pk=pk, activo=True)
+        pdf_bytes = build_casa_ficha_pdf(casa)
+        response = HttpResponse(pdf_bytes, content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename="ficha-casa-{casa.pk}.pdf"'
+        return response
+
+
 class DashboardView(StaffRequiredMixin, TemplateView):
     template_name = 'casas/dashboard.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        casas = Casa.objects.all()
-        context['total_casas'] = casas.count()
-        context['casas_en_venta'] = casas.filter(estatus='en_venta').count()
-        context['casas_vendidas'] = casas.filter(estatus='vendida').count()
+        datos_dashboard = ReporteService.obtener_datos_dashboard()
+        context.update(datos_dashboard)
+        context['casas_en_venta'] = datos_dashboard['estatus']['en_venta']
+        context['casas_vendidas'] = datos_dashboard['estatus']['vendida']
         return context
 
 
