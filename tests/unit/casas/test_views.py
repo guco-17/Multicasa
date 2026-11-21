@@ -63,6 +63,8 @@ class CasaSearchViewTests(TestCase):
         self.assertNotContains(response, 'Casa vendida')
         self.assertNotContains(response, 'Casa desactivada')
         self.assertContains(response, 'Imagen no disponible')
+        self.assertContains(response, 'id="heroMainCarousel"')
+        self.assertContains(response, 'data-bs-ride="carousel"')
 
     def test_home_card_uses_only_the_principal_house_image(self):
         casa = Casa.objects.create(

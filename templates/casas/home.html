@@ -6,24 +6,117 @@
 {% block content %}
 <div class="row g-0 hero-row">
     <div class="col-lg-9">
-        <picture class="hero-picture">
-            <source
-                type="image/avif"
-                srcset="{% static 'assets/photos/hero-casa-exterior-480.avif' %} 480w, {% static 'assets/photos/hero-casa-exterior-771.avif' %} 771w"
-                sizes="(max-width: 800px) 100vw, 771px">
-            <source
-                type="image/webp"
-                srcset="{% static 'assets/photos/hero-casa-exterior-480.webp' %} 480w, {% static 'assets/photos/hero-casa-exterior-771.webp' %} 771w"
-                sizes="(max-width: 800px) 100vw, 771px">
-            <img
-                src="{% static 'assets/photos/hero-casa-exterior-771.jpg' %}"
-                srcset="{% static 'assets/photos/hero-casa-exterior-480.jpg' %} 480w, {% static 'assets/photos/hero-casa-exterior-771.jpg' %} 771w"
-                sizes="(max-width: 800px) 100vw, 771px"
-                width="771"
-                height="255"
-                alt="Casa con jardín y fachada de estilo mediterráneo"
-                fetchpriority="high">
-        </picture>
+        <div
+            id="heroMainCarousel"
+            class="carousel slide hero-carousel"
+            data-bs-ride="carousel"
+            data-bs-interval="4500"
+            data-bs-pause="hover"
+            aria-label="Galería destacada de Bienes Raíces Multicasa">
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#heroMainCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Propiedad destacada 1"></button>
+                <button type="button" data-bs-target="#heroMainCarousel" data-bs-slide-to="1" aria-label="Propiedad destacada 2"></button>
+                <button type="button" data-bs-target="#heroMainCarousel" data-bs-slide-to="2" aria-label="Propiedad destacada 3"></button>
+                <button type="button" data-bs-target="#heroMainCarousel" data-bs-slide-to="3" aria-label="Propiedad destacada 4"></button>
+            </div>
+
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <picture class="hero-picture">
+                        <source
+                            type="image/avif"
+                            srcset="{% static 'assets/photos/hero-casa-exterior-480.avif' %} 480w, {% static 'assets/photos/hero-casa-exterior-771.avif' %} 771w"
+                            sizes="(max-width: 800px) 100vw, 771px">
+                        <source
+                            type="image/webp"
+                            srcset="{% static 'assets/photos/hero-casa-exterior-480.webp' %} 480w, {% static 'assets/photos/hero-casa-exterior-771.webp' %} 771w"
+                            sizes="(max-width: 800px) 100vw, 771px">
+                        <img
+                            src="{% static 'assets/photos/hero-casa-exterior-771.jpg' %}"
+                            srcset="{% static 'assets/photos/hero-casa-exterior-480.jpg' %} 480w, {% static 'assets/photos/hero-casa-exterior-771.jpg' %} 771w"
+                            sizes="(max-width: 800px) 100vw, 771px"
+                            width="771"
+                            height="255"
+                            alt="Casa con jardín y fachada de estilo mediterráneo"
+                            fetchpriority="high">
+                    </picture>
+                    <div class="carousel-caption hero-carousel-caption">
+                        <strong>Residencias verificadas en las mejores zonas</strong>
+                        <span>Asesoría integral de compra y venta con respaldo Multicasa</span>
+                    </div>
+                </div>
+
+                <div class="carousel-item">
+                    <picture class="hero-picture">
+                        <source type="image/avif" srcset="{% static 'assets/photos/casa-1.avif' %}">
+                        <source type="image/webp" srcset="{% static 'assets/photos/casa-1.webp' %}">
+                        <img
+                            src="{% static 'assets/photos/casa-1.png' %}"
+                            width="771"
+                            height="255"
+                            alt="Vivienda familiar con acabados contemporáneos"
+                            loading="lazy">
+                    </picture>
+                    <div class="carousel-caption hero-carousel-caption">
+                        <strong>Opciones residenciales para tu familia</strong>
+                        <span>Filtra por ciudad, rango de precio, recámaras y baños</span>
+                    </div>
+                </div>
+
+                <div class="carousel-item">
+                    <picture class="hero-picture">
+                        <source type="image/avif" srcset="{% static 'assets/photos/casa-2.avif' %}">
+                        <source type="image/webp" srcset="{% static 'assets/photos/casa-2.webp' %}">
+                        <img
+                            src="{% static 'assets/photos/casa-2.png' %}"
+                            width="771"
+                            height="255"
+                            alt="Propiedad residencial con amplias áreas verdes"
+                            loading="lazy">
+                    </picture>
+                    <div class="carousel-caption hero-carousel-caption">
+                        <strong>Ubicación estratégica y plusvalía garantizada</strong>
+                        <span>Consulta mapas interactivos y descarga la ficha técnica en PDF</span>
+                    </div>
+                </div>
+
+                <div class="carousel-item">
+                    <picture class="hero-picture">
+                        <source type="image/avif" srcset="{% static 'assets/photos/casa-3.avif' %}">
+                        <source type="image/webp" srcset="{% static 'assets/photos/casa-3.webp' %}">
+                        <img
+                            src="{% static 'assets/photos/casa-3.png' %}"
+                            width="771"
+                            height="255"
+                            alt="Residencia moderna lista para habitar"
+                            loading="lazy">
+                    </picture>
+                    <div class="carousel-caption hero-carousel-caption">
+                        <strong>Agenda una visita con nuestros asesores</strong>
+                        <span>Atención personalizada hasta la firma de tu propiedad</span>
+                    </div>
+                </div>
+            </div>
+
+            <button
+                class="carousel-control-prev"
+                type="button"
+                data-bs-target="#heroMainCarousel"
+                data-bs-slide="prev"
+                aria-label="Anterior imagen destacada">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Anterior</span>
+            </button>
+            <button
+                class="carousel-control-next"
+                type="button"
+                data-bs-target="#heroMainCarousel"
+                data-bs-slide="next"
+                aria-label="Siguiente imagen destacada">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Siguiente</span>
+            </button>
+        </div>
     </div>
     <aside class="col-lg-3 quick-menu" aria-label="Servicios inmobiliarios">
         <a href="#buscador">Compra</a>
