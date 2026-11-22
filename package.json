@@ -1,0 +1,11 @@
+{
+  "name": "multicasa-e2e",
+  "private": true,
+  "scripts": {
+    "test:e2e": "playwright test --config=tests/e2e/playwright.config.js",
+    "test:e2e:headed": "playwright test --config=tests/e2e/playwright.config.js --headed"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.0"
+  }
+}
