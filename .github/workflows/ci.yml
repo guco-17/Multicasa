@@ -69,6 +69,10 @@ jobs:
   browser-tests:
     name: browser-tests
     runs-on: ubuntu-latest
+    env:
+      DJANGO_SECRET_KEY: ci-only-secret-key
+      DJANGO_DEBUG: "True"
+      DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -89,6 +93,9 @@ jobs:
 
       - name: Install Python dependencies
         run: python -m pip install -r requirements.txt
+
+      - name: Apply migrations for browser tests
+        run: python manage.py migrate --noinput
 
       - name: Install Node.js dependencies
         run: npm ci
